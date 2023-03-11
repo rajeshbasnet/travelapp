@@ -1,9 +1,6 @@
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, Text, View } from "react-native";
-
 import { NavigationContainer } from "@react-navigation/native";
 
-import StackNavigator from "./screens/config/StackNavigator";
+import StackNavigator from "./configs/StackNavigator";
 
 export default function App() {
     return (
