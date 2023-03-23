@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TravelApp",
-    "slug": "TravelApp",
+    "name": "travelapp",
+    "slug": "travelapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
