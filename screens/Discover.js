@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { Attraction, Hotel, Resturant } from "../assets/images";
 
-export default function Discover() {
+export default function Discover({ navigation }) {
     return (
         <SafeAreaView className="flex-1 bg-[#F4F5FF]">
             <View className="mx-4 mt-4">
@@ -32,20 +32,22 @@ export default function Discover() {
                 <View className="mt-6">
                     <Text className="font-[baloo-bold] text-xl">Travel Plannings</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-1">
-                        <View className="relative w-[300px] h-[150px]">
-                            <View className="w-full h-full">
-                                <ImageBackground
-                                    key={"hotel"}
-                                    source={Hotel}
-                                    className="w-full h-full rounded-3xl overflow-hidden"
-                                    resizeMode="cover"
-                                />
-                                <View className="absolute w-full h-full rounded-3xl" style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}></View>
+                        <TouchableWithoutFeedback onPress={() => navigation.navigate("places")}>
+                            <View className="relative w-[300px] h-[150px]">
+                                <View className="w-full h-full">
+                                    <ImageBackground
+                                        key={"hotel"}
+                                        source={Hotel}
+                                        className="w-full h-full rounded-3xl overflow-hidden"
+                                        resizeMode="cover"
+                                    />
+                                    <View className="absolute w-full h-full rounded-3xl" style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}></View>
+                                </View>
+                                <View className="absolute bottom-1 left-6">
+                                    <Text className="font-[baloo-extrabold] text-xl text-white">Hotels</Text>
+                                </View>
                             </View>
-                            <View className="absolute bottom-1 left-6">
-                                <Text className="font-[baloo-extrabold] text-xl text-white">Hotels</Text>
-                            </View>
-                        </View>
+                        </TouchableWithoutFeedback>
 
                         <View className="relative w-[300px] h-[150px] ml-4">
                             <View className="w-full h-full">
