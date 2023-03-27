@@ -1,21 +1,23 @@
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./configs/StackNavigator";
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import * as Font from "expo-font";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
-        "baloo-bold": require("./assets/fonts/baloo/baloo-regular.ttf"),
-        "baloo-medium": require("./assets/fonts/baloo/baloo-medium.ttf"),
-        "baloo-semibold": require("./assets/fonts/baloo/baloo-semibold.ttf"),
-        "baloo-bold": require("./assets/fonts/baloo/baloo-bold.ttf"),
-        "baloo-extrabold": require("./assets/fonts/baloo/baloo-extrabold.ttf"),
+        BalooRegular: require("./assets/fonts/BalooDa2-Regular.ttf"),
+        BalooMedium: require("./assets/fonts/BalooDa2-Medium.ttf"),
+        BalooSemibold: require("./assets/fonts/BalooDa2-SemiBold.ttf"),
+        BalooBold: require("./assets/fonts/BalooDa2-Bold.ttf"),
+        BalooExtrabold: require("./assets/fonts/BalooDa2-ExtraBold.ttf"),
     });
 
     return (
-        <NavigationContainer>
-            <StackNavigator></StackNavigator>
-        </NavigationContainer>
+        <Provider store={store}>
+            <NavigationContainer>
+                <StackNavigator></StackNavigator>
+            </NavigationContainer>
+        </Provider>
     );
 }

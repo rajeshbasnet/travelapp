@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 
 export default function StackNavigator() {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, statusBarHidden: true }}>
             <Stack.Screen name="discover" component={Discover} />
             <Stack.Screen name="places" component={Places} />
             <Stack.Screen name="detail" component={Detail} />

@@ -7,7 +7,7 @@ import { Hotel } from "../assets/images";
 export default function Places({ navigation }) {
     return (
         <SafeAreaView className="flex-1 bg-[#F4F5FF]">
-            <View className="mx-2 flex flex-row items-center justify-between bg-white px-1 py-1 rounded-3xl" style={styles.elevation}>
+            <View className="mx-2 my-2 flex flex-row items-center justify-between bg-white px-1 py-1 rounded-3xl" style={styles.elevation}>
                 <TouchableWithoutFeedback onPress={() => navigation.pop()}>
                     <View className="bg-slate-100 px-2 py-2 rounded-full">
                         <FontAwesome5 name="chevron-circle-left" size={20} color="black" />
@@ -21,8 +21,8 @@ export default function Places({ navigation }) {
             </View>
             <View className="mt-10 flex-1">
                 <View className="mx-4">
-                    <Text className="font-[baloo-bold] text-3xl">The Best Hotels nearby</Text>
-                    <Text className="font-[baloo-bold] text-3xl">your Place.</Text>
+                    <Text className="font-[BalooBold] text-3xl">The Best Hotels nearby</Text>
+                    <Text className="font-[BalooBold] text-3xl">your Place.</Text>
                 </View>
 
                 <FlatList
@@ -41,8 +41,8 @@ export default function Places({ navigation }) {
                                     </View>
                                     <View className="ml-4">
                                         <View>
-                                            <Text className="font-[baloo-bold] text-2xl">Barabudur</Text>
-                                            <Text className="mb-2 font-[baloo-medium] text-lg text-gray-400">Magelong</Text>
+                                            <Text className="font-[BalooBold] text-xl">Barabudur</Text>
+                                            <Text className="mb-2 font-[BalooMedium] text-lg text-gray-400">Magelong</Text>
                                         </View>
                                     </View>
                                     <View className="absolute right-6 bg-slate-100 px-2 py-2 rounded-full">
