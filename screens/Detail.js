@@ -1,15 +1,16 @@
-import { View, Text, Image, TouchableWithoutFeedback, ImageBackground, ScrollView, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableWithoutFeedback, ImageBackground, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { Attraction } from "../assets/images";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 
-export default function Detail({ navigation }) {
+export default function Detail({ route, navigation }) {
+    const { name, timezone, smallUrl, largeUrl, price, ranking_category, num_reviews } = route.params;
+
     return (
         <SafeAreaView className="flex-1">
             <View className="relative">
                 <View className="relative h-[260px]">
-                    <ImageBackground source={Attraction} resizeMode="cover" className="w-full h-full" />
+                    <ImageBackground src={largeUrl} resizeMode="cover" className="w-full h-full" />
                     <View className="absolute w-full h-full" style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}></View>
                 </View>
                 <View className="mx-2 mt-2 absolute">
@@ -19,20 +20,19 @@ export default function Detail({ navigation }) {
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
-                <View className="absolute bottom-[10%] mx-8">
-                    <Text className="font-[BalooBold] text-3xl text-white">Parangtritis</Text>
-                    <Text className="font-[BalooBold] text-3xl text-white">Beach</Text>
-                    <View className="flex-row items-center justify-between w-[90%]">
-                        <Text className="text-white font-[BalooBold] text-md">Yogyakarta</Text>
-                        <Text className="text-white font-[BalooBold] text-md">$650/Package</Text>
+                <View className="absolute bottom-[20%] mx-8">
+                    <Text className="font-[BalooBold] text-3xl text-white w-[300px]">{name}</Text>
+                    <View className="flex-row items-center justify-between w-[95%]">
+                        <Text className="text-white font-[BalooBold] text-md">{timezone}</Text>
+                        <Text className="text-white font-[BalooBold] text-md">{price}/Package</Text>
                         <View className="flex-row items-baseline">
                             <AntDesign name="star" size={15} color="#F5D04A" />
-                            <Text className="text-white font-[BalooBold] text-md ml-2">4.5</Text>
+                            <Text className="text-white font-[BalooBold] text-md ml-2">{num_reviews}</Text>
                         </View>
                     </View>
                 </View>
             </View>
-            <View className="bg-[#F4F5FF] rounded-3xl bottom-4 h-full">
+            <View className="bg-[#F4F5FF] rounded-3xl bottom-10 h-full">
                 <View className="mt-8 mx-4">
                     <Text className="font-[BalooBold] text-xl text-gray-600">About</Text>
                     <Text className="font-[BalooMedium] leading-5 text-gray-400 mt-2">
@@ -44,35 +44,21 @@ export default function Detail({ navigation }) {
                     </Text>
                     <View className="my-4">
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            {[1, 2, 3, 4, 5].map(() => {
+                            {[1, 2, 3, 4, 5].map((item) => {
                                 return (
-                                    <View className="mx-2 rounded-3xl">
-                                        <Image source={Attraction} className="w-[90px] h-[90px] rounded-xl" resizeMode="contain" />
+                                    <View className="mx-2 rounded-3xl" key={item}>
+                                        <Image src={largeUrl} className="w-[250px] h-[120px] rounded-xl" resizeMode="cover" />
                                     </View>
                                 );
                             })}
                         </ScrollView>
                     </View>
-                    <View className="mt-2">
-                        <Text className="font-[BalooBold] text-xl text-gray-600">Package Facilities</Text>
-                    </View>
-                    <ScrollView horizontal className="mt-1">
-                        {[1, 2, 3, 4, 5, 6].map((item, index) => {
-                            return (
-                                <TouchableWithoutFeedback key={index}>
-                                    <View className="w-16 mx-2">
-                                        <View className="w-full h-16 bg-violet-300 rounded-xl"></View>
-                                        <Text className="text-center font-[BalooBold] text-gray-400">Board</Text>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            );
-                        })}
-                    </ScrollView>
-                    <TouchableWithoutFeedback>
+
+                    <TouchableOpacity>
                         <View className="w-[95%] mx-2 bg-[#2DAFBC] rounded-2xl pt-4 pb-3 mt-2">
-                            <Text className="text-center font-[BalooBold] text-white w-full text-xl">Book Now - $650</Text>
+                            <Text className="text-center font-[BalooBold] text-white w-full text-xl">Book Now &nbsp;&nbsp;&nbsp; {price}</Text>
                         </View>
-                    </TouchableWithoutFeedback>
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>

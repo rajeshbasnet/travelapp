@@ -1,12 +1,12 @@
 import { View, Text, TouchableWithoutFeedback, Image, TouchableOpacity, Keyboard } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TravelPlannnings from "../components/detail/TravelPlannnings";
-import PopularPlace from "../components/detail/PopularPlace";
 import Search from "../components/shared/Search";
 import Footer from "../components/footer/Footer";
 import { useDispatch } from "react-redux";
 import { hideAutoComplete } from "../redux/locationAutoCompleteSlice";
+import PopularPlace from "../components/discover/PopularPlace";
+import TravelPlannnings from "../components/discover/TravelPlannnings";
 
 export default function Discover({ navigation }) {
     const dispatch = useDispatch();
@@ -18,8 +18,8 @@ export default function Discover({ navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress={hideAutoCompleteAndKeyBoard}>
-            <SafeAreaView className="flex-1 bg-[#F4F5FF]">
-                <View className="mx-4 mt-4">
+            <SafeAreaView className="flex-1 bg-[#F4F5FF] relative">
+                <View className="mx-4 mt-4 h-full">
                     {/** User Information Component */}
                     <View className="flex flex-row items-center">
                         <Text className="w-12 h-12 rounded-full bg-gray-200"></Text>
@@ -42,7 +42,7 @@ export default function Discover({ navigation }) {
                     <PopularPlace />
 
                     {/** Footer */}
-                    <Footer />
+                    <Footer navigation={navigation} />
                 </View>
             </SafeAreaView>
         </TouchableWithoutFeedback>

@@ -1,19 +1,30 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { hideAutoComplete } from "../../redux/locationAutoCompleteSlice";
 
-export default function LocationAutoComplete() {
+export default function LocationAutoComplete({ locations, setSearchLocationQuery }) {
+    const dispatch = useDispatch();
     const autoCompleteShow = useSelector((state) => state.location.show);
+
+    function pressHandler(display_place) {
+        setSearchLocationQuery(display_place);
+        dispatch(hideAutoComplete());
+    }
 
     return (
         autoCompleteShow && (
-            <View className="h-[150px] py-4 rounded-3xl bg-[#fbfbff] absolute w-full top-[100%] z-20" style={styles.elevation}>
+            <View className="h-[250px] py-4 rounded-3xl bg-[#fbfbff] fixed w-full z-20" style={styles.elevation}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <TouchableOpacity className="px-4 py-2">
-                        <Text className="text-[16px] font-[BalooBold] leading-5">Kathmandu</Text>
-                        <Text className="font-[BalooRegular] text-md leading-5">location.display_address</Text>
-                        <View className="w-full bg-gray-200 h-[2px] my-1"></View>
-                    </TouchableOpacity>
+                    {locations.map((location, index) => {
+                        return (
+                            <TouchableOpacity key={index} className="px-4 py-2" onPress={() => pressHandler(location.display_place)}>
+                                <Text className="text-[16px] font-[BalooBold] leading-5">{location?.display_place}</Text>
+                                <Text className="font-[BalooRegular] text-md leading-5">{location?.display_address}</Text>
+                                <View className="w-full bg-gray-200 h-[2px] my-1"></View>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </ScrollView>
             </View>
         )

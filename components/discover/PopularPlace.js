@@ -5,7 +5,7 @@ import { Hotel } from "../../assets/images";
 
 export default function PopularPlace() {
     return (
-        <View className="mt-4">
+        <View className="mt-6">
             <View className="flex flex-row items-start justify-between">
                 <Text className="font-[BalooBold] text-xl">Popular Place</Text>
                 <TouchableWithoutFeedback>
@@ -16,7 +16,7 @@ export default function PopularPlace() {
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <View
                     className="px-2 py-2 mx-2 my-2 w-[240px] h-28 rounded-xl flex flex-row items-center bg-white"
-                    style={{ elevation: 5, shadowRadius: 10, shadowColor: "#4A5AFC", shadowOffset: [-50, -50] }}
+                    style={{ elevation: 1000, shadowRadius: 10, shadowColor: "#4A5AFC", shadowOffset: [-50, -50] }}
                 >
                     <View>
                         <Image source={Hotel} className="w-20 h-full rounded-xl" resizeMode="cover" />
