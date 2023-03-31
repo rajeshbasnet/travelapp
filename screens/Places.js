@@ -2,8 +2,7 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/places/Header";
-import { getPlaces } from "../services/PlaceService";
-import { HOTELS } from "../constants/GlobalConstants";
+import { getHotels } from "../services/PlaceService";
 import { useDispatch, useSelector } from "react-redux";
 import { setHotels } from "../redux/placeSlice";
 import Place from "../components/places/Place";
@@ -13,7 +12,7 @@ export default function Places({ navigation }) {
     const hotels = useSelector((state) => state.place.hotels);
 
     useEffect(() => {
-        getPlaces(HOTELS).then((responseData) => {
+        getHotels().then((responseData) => {
             dispatch(setHotels(responseData));
         });
     }, []);
@@ -42,12 +41,3 @@ export default function Places({ navigation }) {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    elevation: {
-        elevation: 5,
-        shadowRadius: 10,
-        shadowColor: "#4A5AFC",
-        shadowOffset: [-50, -50],
-    },
-});

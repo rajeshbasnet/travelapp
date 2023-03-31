@@ -4,7 +4,7 @@ export const placeSlice = createSlice({
     name: "places",
     initialState: {
         hotels: [],
-        resturants: [],
+        restaurants: [],
         attractions: [],
     },
     reducers: {

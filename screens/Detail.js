@@ -1,17 +1,32 @@
 import { View, Text, Image, TouchableWithoutFeedback, ImageBackground, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { getHotelDetails } from "../services/DetailService";
+import { replaceUrlWidthHeight } from "../utility/Util";
 
 export default function Detail({ route, navigation }) {
-    const { name, timezone, smallUrl, largeUrl, price, ranking_category, num_reviews } = route.params;
+    console.log(route.params);
+    const { id, urlTemplate } = route.params;
+
+    const [hotelDetails, setHotelDetails] = useState({});
+    const { rating, title, rankingDetails, restaurantNearByList, attractionNearByList, about, photos, amenitiesScreen, reviews, price } =
+        hotelDetails;
+
+    let url = replaceUrlWidthHeight(urlTemplate, 400, 400);
+
+    useEffect(() => {
+        getHotelDetails(id).then((detail) => {
+            setHotelDetails(detail);
+        });
+    }, []);
 
     return (
         <SafeAreaView className="flex-1">
             <View className="relative">
                 <View className="relative h-[260px]">
-                    <ImageBackground src={largeUrl} resizeMode="cover" className="w-full h-full" />
-                    <View className="absolute w-full h-full" style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}></View>
+                    <ImageBackground src={url} resizeMode="cover" className="w-full h-full" />
+                    <View className="absolute w-full h-full" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}></View>
                 </View>
                 <View className="mx-2 mt-2 absolute">
                     <TouchableWithoutFeedback onPress={() => navigation.pop()}>
@@ -21,13 +36,13 @@ export default function Detail({ route, navigation }) {
                     </TouchableWithoutFeedback>
                 </View>
                 <View className="absolute bottom-[20%] mx-8">
-                    <Text className="font-[BalooBold] text-3xl text-white w-[300px]">{name}</Text>
+                    <Text className="font-[BalooBold] text-3xl text-white w-[300px]">{title}</Text>
                     <View className="flex-row items-center justify-between w-[95%]">
-                        <Text className="text-white font-[BalooBold] text-md">{timezone}</Text>
+                        <Text className="text-white font-[BalooBold] text-md">{title}</Text>
                         <Text className="text-white font-[BalooBold] text-md">{price}/Package</Text>
                         <View className="flex-row items-baseline">
                             <AntDesign name="star" size={15} color="#F5D04A" />
-                            <Text className="text-white font-[BalooBold] text-md ml-2">{num_reviews}</Text>
+                            <Text className="text-white font-[BalooBold] text-md ml-2">0</Text>
                         </View>
                     </View>
                 </View>
@@ -47,7 +62,7 @@ export default function Detail({ route, navigation }) {
                             {[1, 2, 3, 4, 5].map((item) => {
                                 return (
                                     <View className="mx-2 rounded-3xl" key={item}>
-                                        <Image src={largeUrl} className="w-[250px] h-[120px] rounded-xl" resizeMode="cover" />
+                                        <Image src={url} className="w-[250px] h-[120px] rounded-xl" resizeMode="cover" />
                                     </View>
                                 );
                             })}
