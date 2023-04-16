@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/BalooBold.ttf",
+      "sha1": "f10e4af9dad10f3da476433a9356c96195d8d131"
+    },
+    {
+      "path": "assets/fonts/BalooExtrabold.ttf",
+      "sha1": "cd05362483ffe4d12ba74d8ddbee935b45dba4ff"
+    },
+    {
+      "path": "assets/fonts/BalooMedium.ttf",
+      "sha1": "49fe3cff2a4041a838311d1cfbd14fdcca8f6997"
+    },
+    {
+      "path": "assets/fonts/BalooRegular.ttf",
+      "sha1": "e2dc831ed29c10ecb26d69804924057590ed545d"
+    },
+    {
+      "path": "assets/fonts/BalooSemibold.ttf",
+      "sha1": "11568fe7a30673411bb78fa2d7d9bdc63f0ba16c"
+    },
+    {
+      "path": "assets/fonts/SansBold.ttf",
+      "sha1": "62442a18a9fe9457c1afeabf683d263a691b7798"
+    },
+    {
+      "path": "assets/fonts/SansMedium.ttf",
+      "sha1": "3c6a09fcc6a454924c81af7dff94fc6d399ed79b"
+    },
+    {
+      "path": "assets/fonts/SansRegular.ttf",
+      "sha1": "56c5c0d38bde4c1f1549dda43db37b09c608aad3"
+    },
+    {
+      "path": "assets/fonts/Sansthin.ttf",
+      "sha1": "58c733e22bceeaf9609ce578eca92ac303c6d92f"
+    }
+  ]
+}

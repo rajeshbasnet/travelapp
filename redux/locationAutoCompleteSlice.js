@@ -20,5 +20,4 @@ export const locationAutoCompleteSlice = createSlice({
 });
 
 export const { setLocation, showAutoComplete, hideAutoComplete } = locationAutoCompleteSlice.actions;
-
 export default locationAutoCompleteSlice.reducer;
