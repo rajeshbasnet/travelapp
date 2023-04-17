@@ -15,10 +15,10 @@ import {
   getAttractions,
 } from '../../services/DiscoverService';
 import {setAttractions} from '../../redux/placeSlice';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, PermissionsAndroid} from 'react-native';
 import {setLoading, setLocation} from '../../redux/globalSlice';
 import AppLoading from '../loading/AppLoading';
-import Location from 'react-native-location';
+import Geolocation from 'react-native-geolocation-service';
 
 export default function PopularPlace() {
   const dispatch = useDispatch();
@@ -43,24 +43,37 @@ export default function PopularPlace() {
     dispatch(setLoading(false));
   };
 
-  // const requestLocationPermission = async () => {
-  //   const granted = await RNLocation.requestPermission({
-  //     ios: 'whenInUse',
-  //     android: {
-  //       detail: 'coarse',
-  //     },
-  //   });
+  const requestLocationPermission = async () => {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Geolocation Permission',
+        message: 'Can we access your location?',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
 
-  //   if (granted) {
-  //     RNLocation.subscribeToLocationUpdates(location => {
-  //       console.log(location);
-  //     });
-  //   }
-  // };
+    if (granted) {
+      Geolocation.getCurrentPosition(
+        position => {
+          console.log(position);
+          dispatch(setLocation(position));
+        },
+        error => {
+          // See error code charts below.
+          console.log(error.code, error.message);
+          setLocation(false);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    }
+  };
 
-  // useLayoutEffect(() => {
-  //   requestLocationPermission();
-  // }, []);
+  useLayoutEffect(() => {
+    requestLocationPermission();
+  }, []);
 
   useEffect(() => {
     if (location?.coords?.latitude) {
