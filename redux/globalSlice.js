@@ -1,25 +1,22 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const globalSlice = createSlice({
-  name: 'global',
-  initialState: {
-    location: {},
-    show: false,
-    loading: true,
-  },
-  reducers: {
-    setLocation: (state, action) => {
-      state.location = action.payload;
+    name: "global",
+    initialState: {
+        location: {},
+        show: false,
+        loading: true,
     },
-    setLoading: (state, action) => {
-      state.loading = action.payload;
+    reducers: {
+        setLocation: (state, action) => {
+            state.location = action.payload;
+        },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
     },
-    setShow: state => {
-      state.show = !state.show;
-    },
-  },
 });
 
-export const {setLocation, setLoading, setShow} = globalSlice.actions;
+export const { setLocation, setLoading } = globalSlice.actions;
 
 export default globalSlice.reducer;
