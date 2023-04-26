@@ -24,7 +24,7 @@ export default function Chatbot({ navigation }) {
     const dispatch = useDispatch();
 
     const [data, setData] = useState([]);
-    const apiKey = "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";
+    const apiKey = "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";
     const apiUrl = "https://api.openai.com/v1/chat/completions";
     const [textInput, setTextInput] = useState("");
 

@@ -5,13 +5,50 @@ import {
     SafeAreaView,
     TextInput,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Entypo, Feather } from "@expo/vector-icons";
+import { registerUser } from "../services/AuthService";
+import { Keyboard } from "react-native";
+import { AlertError, AlertSuccess } from "../components/shared/Alert";
 
 export default function Register({ navigation }) {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [number, setNumber] = useState("");
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+
+    async function registerUserHandler() {
+        try {
+            const message = await registerUser(username, password, number);
+            setSuccess(message);
+            setTimeout(() => {
+                setSuccess("");
+            }, 2000);
+
+            if (token) {
+                setTimeout(() => {
+                    navigation.navigate("discover");
+                }, 3000);
+            }
+        } catch (error) {
+            setError("Cannot register user with given email address");
+            setTimeout(() => {
+                setError("");
+            }, 2000);
+        }
+
+        Keyboard.dismiss();
+        setUsername("");
+        setPassword("");
+        setNumber("");
+    }
+
     return (
         <SafeAreaView className="flex-1 justify-center bg-white">
+            {error && <AlertError message={error} />}
+            {success && <AlertSuccess message={success} />}
             <View className="mx-6">
                 {/** Login Header */}
                 <View>
@@ -33,6 +70,8 @@ export default function Register({ navigation }) {
                         <TextInput
                             placeholder="travel@gmail.com"
                             className="border border-gray-300 rounded-3xl px-4 py-3"
+                            value={username}
+                            onChangeText={(value) => setUsername(value)}
                         />
                     </View>
 
@@ -45,6 +84,8 @@ export default function Register({ navigation }) {
                             <TextInput
                                 placeholder="min. 8 characters"
                                 className="border border-gray-300 rounded-3xl px-4 py-3"
+                                value={password}
+                                onChangeText={(value) => setPassword(value)}
                             />
                             <View className="absolute right-2 bottom-[25%]">
                                 <Feather name="eye" size={22} color="#c2c1be" />
@@ -63,6 +104,8 @@ export default function Register({ navigation }) {
                                 keyboardType="numeric"
                                 placeholder="eq. 10 numbers required"
                                 className="border border-gray-300 rounded-3xl px-4 py-3"
+                                value={number}
+                                onChangeText={(value) => setNumber(value)}
                             />
                         </View>
                     </View>
@@ -80,10 +123,10 @@ export default function Register({ navigation }) {
                     </View>
                 </View>
 
-                {/** Login Container */}
+                {/** Register Container */}
                 <View>
-                    {/** Login Button */}
-                    <TouchableOpacity>
+                    {/** Rgister Button */}
+                    <TouchableOpacity onPress={registerUserHandler}>
                         <View className="mt-6 bg-[#A2FD7D] rounded-3xl px-4 py-4">
                             <Text className="text-[15px] text-center font-[SansMedium]">
                                 Continue
