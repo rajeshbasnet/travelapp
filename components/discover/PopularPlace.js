@@ -17,15 +17,17 @@ import {
 import { setAttractions } from "../../redux/placeSlice";
 import { TouchableOpacity } from "react-native";
 import * as Location from "expo-location";
-import { setLoading, setLocation } from "../../redux/globalSlice";
+import { setLocation } from "../../redux/globalSlice";
+import { setLoading } from "../../redux/discoverSlice";
 import { useLayoutEffect } from "react";
 import AppLoading from "../loading/AppLoading";
 
-export default function PopularPlace() {
-    const dispatch = useDispatch();
+export default function PopularPlace({ navigation }) {
     const popularPlaces = useSelector((state) => state.place.attractions);
     const location = useSelector((state) => state.global.location);
-    const loading = useSelector((state) => state.global.loading);
+    const loading = useSelector((state) => state.discover.loading);
+
+    const dispatch = useDispatch();
 
     const attractionDetailsHandler = async () => {
         const attractionDetailList = [];
@@ -62,6 +64,7 @@ export default function PopularPlace() {
     };
 
     useLayoutEffect(() => {
+        dispatch(setLoading(true));
         requestLocationPermissionHandler();
     }, []);
 
@@ -72,7 +75,7 @@ export default function PopularPlace() {
     }, [location]);
 
     return (
-        <View className="mt-6 flex-1">
+        <View className="mt-8 flex-1">
             <View className="flex flex-row items-start justify-between">
                 <Text className="font-[BalooBold] text-xl">Popular Place</Text>
             </View>
@@ -85,10 +88,18 @@ export default function PopularPlace() {
                     showsHorizontalScrollIndicator={false}
                 >
                     {popularPlaces &&
-                        [...popularPlaces].splice(1, 5).map((place) => {
-                            const { name, country, road, source } = place;
+                        [...popularPlaces].splice(1, 5).map((place, index) => {
+                            const { name, country, road, source, xid } = place;
                             return (
-                                <TouchableOpacity>
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() =>
+                                        navigation.navigate(
+                                            "attraction_detail",
+                                            { xid }
+                                        )
+                                    }
+                                >
                                     <View
                                         key={place.id}
                                         className="px-2 py-2 mx-2 my-2 w-[260px] overflow-x-hidden h-32 rounded-xl flex flex-row items-center bg-white"

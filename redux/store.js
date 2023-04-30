@@ -4,6 +4,7 @@ import placeSlice from "./placeSlice";
 import detailSlice from "./detailSlice";
 import discoverSlice from "./discoverSlice";
 import globalSlice from "./globalSlice";
+import authSlice from "./authSlice";
 
 export default configureStore({
     reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
         detail: detailSlice,
         discover: discoverSlice,
         global: globalSlice,
+        auth: authSlice,
     },
 });

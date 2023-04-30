@@ -7,14 +7,18 @@ import {
     ScrollView,
     TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Entypo, Feather, Ionicons } from "@expo/vector-icons";
-import { getHotelDetails } from "../services/DetailService";
+import { getHotelDetails, sendMessage } from "../services/DetailService";
 import { replaceUrlWidthHeight } from "../utility/Util";
 import { useDispatch, useSelector } from "react-redux";
 import { hideAbout, setAbout } from "../redux/detailSlice";
 import { Linking } from "react-native";
+import { AlertError, AlertSuccess } from "../components/shared/Alert";
+import { setError, setLoading, setSuccess } from "../redux/globalSlice";
+import { getUserFromToken } from "../services/AuthService";
+import { ActivityIndicator } from "react-native";
 
 export default function Detail({ route, navigation }) {
     const { id, urlTemplate } = route.params;
@@ -38,22 +42,73 @@ export default function Detail({ route, navigation }) {
     } = hotelDetails;
 
     let showAbout = useSelector((state) => state.detail.showAbout);
+    let success = useSelector((state) => state.global.success);
+    let error = useSelector((state) => state.global.error);
+    let token = useSelector((state) => state.auth.token);
+    let loading = useSelector((state) => state.global.loading);
+
     let dispatch = useDispatch();
 
     let url = replaceUrlWidthHeight(urlTemplate, 400, 400);
+    let scrollRef = useRef();
 
     useLayoutEffect(() => {
         dispatch(hideAbout());
+        dispatch(setLoading(true));
     }, []);
 
     useEffect(() => {
         getHotelDetails(id).then((detail) => {
             setHotelDetails(detail);
+            dispatch(setLoading(false));
         });
     }, []);
 
     function phoneCall() {
         Linking.openURL("tel:+977 9802331837");
+    }
+
+    async function sendMessageToHotel() {
+        if (token) {
+            try {
+                scrollRef.current?.scrollTo({
+                    y: 0,
+                    animated: true,
+                });
+
+                const user = await getUserFromToken(token);
+
+                if (user) {
+                    const message = `Booking Alert!
+                    Hello ${title},
+                    There is a request pending for booking.
+                    Please confirm booking request by calling customer.
+                    Phone number : ${user?.number}`;
+
+                    const response = await sendMessage(message);
+                    dispatch(setSuccess("response"));
+
+                    setTimeout(() => {
+                        dispatch(
+                            setSuccess("Your will recieve a phone call shortly")
+                        );
+                    }, 2000);
+
+                    setTimeout(() => {
+                        dispatch(setSuccess(""));
+                    }, 4000);
+                }
+            } catch (error) {
+                dispatch(setError("Cannot book your request right now"));
+
+                setTimeout(() => {
+                    dispatch(setError(""));
+                }, 1500);
+            }
+        } else {
+            dispatch(setError("User must login in order to book"));
+            navigation.navigate("login");
+        }
     }
 
     function openGps() {
@@ -74,9 +129,19 @@ export default function Detail({ route, navigation }) {
         }
     }
 
+    if (loading) {
+        return (
+            <SafeAreaView className="flex-1 items-center justify-center">
+                <ActivityIndicator size={"large"} />
+            </SafeAreaView>
+        );
+    }
+
     return (
-        <ScrollView>
+        <ScrollView ref={scrollRef}>
             <SafeAreaView className="flex-1">
+                {error && <AlertError message={error} />}
+                {success && <AlertSuccess message={success} />}
                 <View className="relative">
                     <View className="relative h-[260px]">
                         <ImageBackground
@@ -93,13 +158,11 @@ export default function Detail({ route, navigation }) {
                         <TouchableWithoutFeedback
                             onPress={() => navigation.pop()}
                         >
-                            <View className="px-2 py-2 rounded-full">
-                                <Ionicons
-                                    name="ios-arrow-undo-circle-outline"
-                                    size={28}
-                                    color="white"
-                                />
-                            </View>
+                            <Ionicons
+                                name="ios-arrow-undo-circle-outline"
+                                size={35}
+                                color="white"
+                            />
                         </TouchableWithoutFeedback>
                     </View>
                     <View className="absolute bottom-[20%] mx-8">
@@ -140,7 +203,7 @@ export default function Detail({ route, navigation }) {
                                     return (
                                         <Text
                                             key={index}
-                                            className="text-[12px] leading-5 text-gray-50 bg-amber-700 px-2 mr-1 rounded-lg font-[SansMedium]"
+                                            className="text-[12px] leading-5 text-gray-50 bg-amber-700 px-2 mr-1 rounded-lg font-[SansMedium] my-1"
                                         >
                                             {tag}
                                         </Text>
@@ -249,7 +312,7 @@ export default function Detail({ route, navigation }) {
                             </View>
                         </View>
 
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={sendMessageToHotel}>
                             <View className="mt-6 bg-[#A2FD7D] rounded-3xl px-4 py-4">
                                 <Text className="font-[SansMedium] text-[15px] tracking-tighter text-center">
                                     Book at ${price}

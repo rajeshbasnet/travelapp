@@ -6,8 +6,9 @@ import {
     TouchableOpacity,
     ImageBackground,
     Alert,
+    ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { useState, useCallback } from "react";
 import { getAttractionDetails } from "../services/DiscoverService";
 import { useEffect } from "react";
@@ -16,6 +17,7 @@ import { Ionicons, AntDesign, Entypo } from "@expo/vector-icons";
 import { hideAbout, setAbout } from "../redux/detailSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Linking } from "react-native";
+import { setLoading } from "../redux/globalSlice";
 
 const OpenURLButton = ({ url, children }) => {
     const handlePress = useCallback(async () => {
@@ -50,25 +52,39 @@ const OpenURLButton = ({ url, children }) => {
 
 export default function AttractionDetails({ navigation, route }) {
     const [attractionDetail, setAttractionDetail] = useState({});
+
     let showAbout = useSelector((state) => state.detail.showAbout);
+    let loading = useSelector((state) => state.global.loading);
+
     let dispatch = useDispatch();
 
     async function getAttractionDetailsFromXID() {
         try {
             const details = await getAttractionDetails(route.params?.xid);
             setAttractionDetail(details);
-
-            //TODO : Loading
+            dispatch(setLoading(false));
         } catch (error) {
             console.log(JSON.stringify(error));
         }
     }
+
+    useLayoutEffect(() => {
+        dispatch(setLoading(true));
+    }, []);
 
     useEffect(() => {
         if (route.params?.xid) {
             getAttractionDetailsFromXID();
         }
     }, []);
+
+    if (loading) {
+        return (
+            <SafeAreaView className="flex-1 items-center justify-center">
+                <ActivityIndicator size={"large"} />
+            </SafeAreaView>
+        );
+    }
 
     return (
         <ScrollView>
@@ -86,20 +102,18 @@ export default function AttractionDetails({ navigation, route }) {
                         />
                         <View
                             className="absolute w-full h-full"
-                            style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+                            style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
                         ></View>
                     </View>
                     <View className="mx-2 mt-2 absolute">
                         <TouchableWithoutFeedback
                             onPress={() => navigation.pop()}
                         >
-                            <View className="px-2 py-2 rounded-full">
-                                <Ionicons
-                                    name="ios-arrow-undo-circle-outline"
-                                    size={28}
-                                    color="white"
-                                />
-                            </View>
+                            <Ionicons
+                                name="ios-arrow-undo-circle-outline"
+                                size={35}
+                                color="white"
+                            />
                         </TouchableWithoutFeedback>
                     </View>
                 </View>

@@ -18,12 +18,12 @@ export default function StackNavigator() {
         <Stack.Navigator
             screenOptions={{ headerShown: false, statusBarHidden: true }}
         >
+            <Stack.Screen name="login" component={Login} />
+            <Stack.Screen name="register" component={Register} />
             <Stack.Screen name="discover" component={Discover} />
             <Stack.Screen name="profile" component={Profile} />
             <Stack.Screen name="splash" component={Splash} />
             <Stack.Screen name="chatbot" component={Chatbot} />
-            <Stack.Screen name="login" component={Login} />
-            <Stack.Screen name="register" component={Register} />
             <Stack.Screen name="places" component={Places} />
             <Stack.Screen name="detail" component={Detail} />
             <Stack.Screen

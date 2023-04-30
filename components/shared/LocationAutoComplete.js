@@ -4,10 +4,12 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
+    ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { hideAutoComplete } from "../../redux/locationAutoCompleteSlice";
+import { setLoading } from "../../redux/globalSlice";
 
 export default function LocationAutoComplete({
     locations,
@@ -16,11 +18,29 @@ export default function LocationAutoComplete({
 }) {
     const dispatch = useDispatch();
     const autoCompleteShow = useSelector((state) => state.location.show);
+    let loading = useSelector((state) => state.global.loading);
 
     function pressHandler(display_place) {
         setSearchLocationQuery(display_place);
         dispatch(hideAutoComplete());
         navigation.navigate("places_list", { place: display_place });
+    }
+
+    useLayoutEffect(() => {
+        dispatch(setLoading(true));
+    }, []);
+
+    if (loading) {
+        return (
+            autoCompleteShow && (
+                <View
+                    className="h-[250px] py-4 rounded-3xl bg-[#fbfbff] items-center justify-center"
+                    style={styles.elevation}
+                >
+                    <ActivityIndicator size={"large"} />
+                </View>
+            )
+        );
     }
 
     return (
@@ -42,7 +62,7 @@ export default function LocationAutoComplete({
                                 <Text className="text-[16px] font-[BalooBold] leading-5">
                                     {location?.display_place}
                                 </Text>
-                                <Text className="font-[BalooRegular] text-md leading-5">
+                                <Text className="font-[SansMedium] text-md leading-4 text-gray-500 mb-1">
                                     {location?.display_address}
                                 </Text>
                                 <View className="w-full bg-gray-200 h-[2px] my-1"></View>

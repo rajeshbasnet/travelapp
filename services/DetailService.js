@@ -45,3 +45,35 @@ export const getHotelDetails = async (id) => {
         console.log(JSON.stringify(error));
     }
 };
+
+export const sendMessage = async (message) => {
+    console.log(message);
+    try {
+        let data = JSON.stringify({
+            messages: [
+                {
+                    body: message,
+                    to: "+977 9802331837",
+                    from: "+977 9861903882",
+                },
+            ],
+        });
+
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: "https://rest.clicksend.com/v3/sms/send",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization:
+                    "Basic cmFqZXNoa2hhcGF0YXJpYmFzbmV0MTIzQGdtYWlsLmNvbTowRDBENDQzRi01MUEzLUMyQTItRTQxMC1BMUZENkU0MTNCNDk=",
+            },
+            data: data,
+        };
+
+        const response = await axios.request(config);
+        return response?.data?.response_msg;
+    } catch (error) {
+        console.log(JSON.stringify(error));
+    }
+};

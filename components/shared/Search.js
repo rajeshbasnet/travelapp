@@ -1,10 +1,21 @@
-import { View, TextInput, ScrollView, TouchableOpacity, Text, StyleSheet } from "react-native";
+import {
+    View,
+    TextInput,
+    ScrollView,
+    TouchableOpacity,
+    Text,
+    StyleSheet,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import LocationAutoComplete from "./LocationAutoComplete";
 import { useDispatch, useSelector } from "react-redux";
-import { setLocation, showAutoComplete } from "../../redux/locationAutoCompleteSlice";
+import {
+    setLocation,
+    showAutoComplete,
+} from "../../redux/locationAutoCompleteSlice";
 import { getLocationData } from "../../services/DiscoverService";
+import { setLoading } from "../../redux/globalSlice";
 
 export default function Search({ navigation }) {
     const [searchLocationQuery, setSearchLocationQuery] = useState("");
@@ -17,6 +28,7 @@ export default function Search({ navigation }) {
         getLocationData(searchLocationQuery)
             .then((response) => {
                 dispatch(setLocation(response));
+                dispatch(setLoading(false));
             })
             .catch((error) => {
                 console.log(error);
@@ -26,7 +38,7 @@ export default function Search({ navigation }) {
     return (
         <View className="mt-4 relative">
             <TextInput
-                className="font-[BalooRegular] px-4 py-3 border rounded-3xl border-gray-300 text-md"
+                className="font-[SansMedium] px-4 py-3 border rounded-3xl border-gray-300 text-md"
                 placeholder="Search Location"
                 value={searchLocationQuery}
                 onFocus={() => dispatch(showAutoComplete())}
@@ -37,7 +49,11 @@ export default function Search({ navigation }) {
             </View>
 
             {/** Search Autocomplete */}
-            <LocationAutoComplete locations={locations} setSearchLocationQuery={setSearchLocationQuery} navigation={navigation} />
+            <LocationAutoComplete
+                locations={locations}
+                setSearchLocationQuery={setSearchLocationQuery}
+                navigation={navigation}
+            />
         </View>
     );
 }

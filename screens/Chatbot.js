@@ -64,20 +64,20 @@ export default function Chatbot({ navigation }) {
 
     return (
         <SafeAreaView
-            className="flex-1 pt-4 bg-slate-300"
+            className="flex-1 pt-2 bg-[#428af5]"
             onPress={() => Keyboard.dismiss()}
         >
             {/** Header */}
-            <View className="mb-4">
-                <Text className="font-[SansMedium] tracking-tight text-center text-xl text-gray-950">
+            <View className="mb-2 mt-2">
+                <Text className="font-[BalooBold] tracking-tight text-center text-2xl text-gray-100 ">
                     Welcome to the Chatbot
                 </Text>
-                <View className="absolute ml-3">
+                <View className="absolute ml-3 bottom-[1px]">
                     <TouchableOpacity onPress={() => navigation.pop()}>
                         <Ionicons
                             name="ios-arrow-undo-circle-outline"
-                            size={28}
-                            color="black"
+                            size={35}
+                            color="white"
                         />
                     </TouchableOpacity>
                 </View>

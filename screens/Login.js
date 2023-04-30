@@ -1,41 +1,65 @@
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { authenticateUser } from "../services/AuthService";
 import { AlertError, AlertSuccess } from "../components/shared/Alert";
 import { Keyboard } from "react-native";
+import { setToken } from "../redux/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setSuccess } from "../redux/globalSlice";
 
 export default function Login({ navigation }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+
+    const [userInfo, setUserInfo] = useState({
+        username: "",
+        password: "",
+    });
+
+    const token = useSelector((state) => state.auth.token);
+    const success = useSelector((state) => state.global.success);
+    const error = useSelector((state) => state.global.error);
+
+    const dispatch = useDispatch();
 
     async function authenticateUserHandler() {
+        Keyboard.dismiss();
+        setUserInfo({
+            username: "",
+            password: "",
+        });
+
         try {
             const token = await authenticateUser(username, password);
-            setSuccess("Login Successfull");
-            setTimeout(() => {
-                setSuccess("");
-            }, 2000);
 
             if (token) {
+                dispatch(setSuccess("Login Successfull"));
                 setTimeout(() => {
-                    navigation.navigate("discover");
+                    dispatch(setSuccess(""));
                 }, 2000);
+
+                if (token) {
+                    dispatch(setToken(token));
+                    setTimeout(() => {
+                        navigation.navigate("discover");
+                    }, 2000);
+                }
             }
         } catch (error) {
-            setError("Cannot find user from given username.");
+            dispatch(setError("Cannot find user from given username."));
             setTimeout(() => {
-                setError("");
+                dispatch(setError(""));
             }, 2000);
         }
-
-        Keyboard.dismiss();
-        setUsername("");
-        setPassword("");
     }
+
+    useEffect(() => {
+        if (token) {
+            navigation.navigate("discover");
+        }
+    }, []);
 
     return (
         <>
@@ -62,7 +86,7 @@ export default function Login({ navigation }) {
                             </Text>
                             <TextInput
                                 placeholder="travel@gmail.com"
-                                className="border border-gray-300 rounded-3xl px-4 py-3"
+                                className="border border-gray-300 rounded-xl px-4 py-3"
                                 value={username}
                                 onChangeText={(value) => setUsername(value)}
                             />
@@ -75,7 +99,7 @@ export default function Login({ navigation }) {
                                 <TextInput
                                     textContentType="password"
                                     placeholder="min. 8 characters"
-                                    className="border border-gray-300 rounded-3xl px-4 py-3"
+                                    className="border border-gray-300 rounded-xl px-4 py-3"
                                     value={password}
                                     onChangeText={(value) => setPassword(value)}
                                 />
