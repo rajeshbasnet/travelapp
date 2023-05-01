@@ -10,6 +10,7 @@ import AttractionDetails from "../screens/AttractionDetails";
 import PlacesList from "../screens/PlacesList";
 import Chatbot from "../screens/Chatbot";
 import Profile from "../screens/Profile";
+import Test from "../screens/Test";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ export default function StackNavigator() {
             screenOptions={{ headerShown: false, statusBarHidden: true }}
         >
             <Stack.Screen name="login" component={Login} />
+            <Stack.Screen name="test" component={Test} />
             <Stack.Screen name="register" component={Register} />
             <Stack.Screen name="discover" component={Discover} />
             <Stack.Screen name="profile" component={Profile} />

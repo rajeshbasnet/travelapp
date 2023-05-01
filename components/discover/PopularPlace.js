@@ -30,20 +30,24 @@ export default function PopularPlace({ navigation }) {
     const dispatch = useDispatch();
 
     const attractionDetailsHandler = async () => {
-        const attractionDetailList = [];
-        const attractions = await getAttractions(
-            location?.coords?.latitude,
-            location?.coords?.longitude
-        );
-        const ids = await fetchXID(attractions);
+        if (location?.timestamp) {
+            const attractionDetailList = [];
+            const attractions = await getAttractions(
+                location?.coords?.latitude,
+                location?.coords?.longitude
+            );
+            const ids = await fetchXID(attractions);
 
-        for (let i = 0; i < ids.length; i++) {
-            const detail = await getAttractionDetail(ids[i]);
-            attractionDetailList.push(detail);
+            for (let i = 0; i < ids.length; i++) {
+                const detail = await getAttractionDetail(ids[i]);
+                attractionDetailList.push(detail);
+            }
+
+            dispatch(setAttractions(attractionDetailList));
+            dispatch(setLoading(false));
+        } else {
+            requestLocationPermissionHandler();
         }
-
-        dispatch(setAttractions(attractionDetailList));
-        dispatch(setLoading(false));
     };
 
     const requestLocationPermissionHandler = async () => {
@@ -56,11 +60,13 @@ export default function PopularPlace({ navigation }) {
         if (status !== "granted") {
             //waiting
             return;
+        } else {
+            let currentLocation = await Location.getCurrentPositionAsync({});
+            if (currentLocation) {
+                console.log(currentLocation);
+                dispatch(setLocation(currentLocation));
+            }
         }
-
-        let currentLocation = await Location.getCurrentPositionAsync({});
-        console.log(currentLocation);
-        dispatch(setLocation(currentLocation));
     };
 
     useLayoutEffect(() => {

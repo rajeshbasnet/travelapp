@@ -8,7 +8,14 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import {
+    AntDesign,
+    Entypo,
+    FontAwesome,
+    FontAwesome5,
+    Ionicons,
+    MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { UserProfile } from "../assets/images";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +31,7 @@ import * as ImagePicker from "expo-image-picker";
 import { getApps, initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Header from "../components/shared/Header";
+import { setError, setSuccess } from "../redux/globalSlice";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAZDGDzEUbd4sOG7L3QtgDJWT9TMlLUjoM",
@@ -43,7 +51,10 @@ const defaultImage =
     "https://firebasestorage.googleapis.com/v0/b/travelapp-53573.appspot.com/o/pngwing.com.png?alt=media&token=824daaf6-8cfa-45e7-af8c-e1f7a43690b8";
 
 export default function Profile({ navigation }) {
-    const token = useSelector((state) => state.auth.token);
+    let token = useSelector((state) => state.auth.token);
+    let success = useSelector((state) => state.global.success);
+    let error = useSelector((state) => state.global.error);
+
     const dispatch = useDispatch();
 
     const [userInfo, setUserInfo] = useState({
@@ -53,9 +64,6 @@ export default function Profile({ navigation }) {
         number: "",
     });
     const [password, setPassword] = useState("");
-
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
 
     async function fetchUser() {
         if (token) {
@@ -72,15 +80,15 @@ export default function Profile({ navigation }) {
                 ...updateUser,
                 password,
             });
-            setSuccess(response?.message);
+            dispatch(setSuccess(response?.message));
 
             setTimeout(() => {
                 dispatch(setToken(""));
-                setSuccess("");
+                dispatch(setSuccess(""));
                 navigation.navigate("login");
             }, 2000);
         } catch (error) {
-            setError("Sorry, we cannot update user");
+            dispatch(setError("Sorry, we cannot update user"));
         }
     }
 
@@ -107,15 +115,15 @@ export default function Profile({ navigation }) {
                     ...user,
                     uri,
                 });
-                setSuccess(response?.message);
+                dispatch(setSuccess(response?.message));
 
                 setTimeout(() => {
-                    setSuccess("");
+                    dispatch(setSuccess(""));
                     navigation.navigate("discover");
                 }, 1000);
             }
         } catch (error) {
-            setError("Sorry, we cannot update user");
+            dispatch(setError("Sorry, we cannot update user"));
         }
     };
 
@@ -175,6 +183,12 @@ export default function Profile({ navigation }) {
         return result;
     }
 
+    function logoutUser() {
+        dispatch(setToken(""));
+        dispatch(setSuccess("You have been logged out successfully"));
+        navigation.navigate("login");
+    }
+
     useEffect(() => {
         fetchUser();
     }, []);
@@ -182,7 +196,19 @@ export default function Profile({ navigation }) {
     return (
         <ScrollView className="bg-[#F4F5FF] w-full h-full">
             {/** Header Component */}
-            <Header navigation={navigation} />
+            <View className="mx-2 my-2 flex flex-row items-center justify-between px-1 py-1">
+                <TouchableOpacity onPress={() => navigation.pop()}>
+                    <Ionicons name="ios-arrow-back" size={30} color="black" />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={logoutUser}>
+                    <MaterialCommunityIcons
+                        name="logout"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
+            </View>
 
             {/** Profile Body Component*/}
             <SafeAreaView className="flex-1 mx-4 pb-4">

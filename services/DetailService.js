@@ -46,6 +46,28 @@ export const getHotelDetails = async (id) => {
     }
 };
 
+export const getHotelDetailsWithoutDest = async (id) => {
+    try {
+        const uri = `http://10.0.2.2:8080/hotels/${id}`;
+
+        const response = await axios.get(uri);
+        return await response.data;
+    } catch (error) {
+        console.log(JSON.stringify(error));
+    }
+};
+
+export const updateHotelDetails = async (id, details) => {
+    try {
+        const uri = `http://10.0.2.2:8080/hotels/details/${id}`;
+
+        const response = await axios.put(uri, details);
+        return await response.data;
+    } catch (error) {
+        console.log(JSON.stringify(error));
+    }
+};
+
 export const sendMessage = async (message) => {
     console.log(message);
     try {

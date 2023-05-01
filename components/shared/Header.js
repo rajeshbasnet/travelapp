@@ -6,11 +6,7 @@ export default function Header({ navigation }) {
     return (
         <View className="mx-2 my-2 flex flex-row items-center justify-between px-1 py-1">
             <TouchableOpacity onPress={() => navigation.pop()}>
-                <Ionicons
-                    name="ios-arrow-undo-circle-outline"
-                    size={35}
-                    color="black"
-                />
+                <Ionicons name="ios-arrow-back" size={30} color="black" />
             </TouchableOpacity>
         </View>
     );

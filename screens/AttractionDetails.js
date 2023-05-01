@@ -110,8 +110,8 @@ export default function AttractionDetails({ navigation, route }) {
                             onPress={() => navigation.pop()}
                         >
                             <Ionicons
-                                name="ios-arrow-undo-circle-outline"
-                                size={35}
+                                name="ios-arrow-back"
+                                size={30}
                                 color="white"
                             />
                         </TouchableWithoutFeedback>

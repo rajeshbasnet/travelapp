@@ -7,7 +7,7 @@ import { AlertError, AlertSuccess } from "../components/shared/Alert";
 import { Keyboard } from "react-native";
 import { setToken } from "../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setSuccess } from "../redux/globalSlice";
+import { setError, setSuccess } from "../redux/globalSlice";
 
 export default function Login({ navigation }) {
     const [username, setUsername] = useState("");
@@ -35,7 +35,7 @@ export default function Login({ navigation }) {
             const token = await authenticateUser(username, password);
 
             if (token) {
-                dispatch(setSuccess("Login Successfull"));
+                dispatch(setSuccess("You have been logged in successfully"));
                 setTimeout(() => {
                     dispatch(setSuccess(""));
                 }, 2000);
@@ -55,11 +55,19 @@ export default function Login({ navigation }) {
         }
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (token) {
             navigation.navigate("discover");
         }
     }, []);
+
+    useEffect(() => {
+        if (success) {
+            setTimeout(() => {
+                dispatch(setSuccess(""));
+            }, 1500);
+        }
+    }, [success]);
 
     return (
         <>
@@ -97,20 +105,13 @@ export default function Login({ navigation }) {
                             </Text>
                             <View className="relative">
                                 <TextInput
+                                    secureTextEntry
                                     textContentType="password"
                                     placeholder="min. 8 characters"
                                     className="border border-gray-300 rounded-xl px-4 py-3"
                                     value={password}
                                     onChangeText={(value) => setPassword(value)}
                                 />
-                                <View className="absolute right-2 bottom-[25%]">
-                                    <Feather
-                                        name="eye"
-                                        size={22}
-                                        color="#c2c1be"
-                                    />
-                                    {/* <Feather name="eye-off" size={22} color="#c2c1be" /> */}
-                                </View>
                             </View>
                         </View>
                     </View>

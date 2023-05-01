@@ -5,12 +5,18 @@ import {
     TouchableWithoutFeedback,
     ImageBackground,
     ScrollView,
+    TextInput,
     TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Entypo, Feather, Ionicons } from "@expo/vector-icons";
-import { getHotelDetails, sendMessage } from "../services/DetailService";
+import {
+    getHotelDetails,
+    getHotelDetailsWithoutDest,
+    sendMessage,
+    updateHotelDetails,
+} from "../services/DetailService";
 import { replaceUrlWidthHeight } from "../utility/Util";
 import { useDispatch, useSelector } from "react-redux";
 import { hideAbout, setAbout } from "../redux/detailSlice";
@@ -19,9 +25,24 @@ import { AlertError, AlertSuccess } from "../components/shared/Alert";
 import { setError, setLoading, setSuccess } from "../redux/globalSlice";
 import { getUserFromToken } from "../services/AuthService";
 import { ActivityIndicator } from "react-native";
+import Amenities from "../components/detail/Amenities";
+import Photos from "../components/detail/Photos";
+import Reviews from "../components/detail/Reviews";
+import Tags from "../components/detail/Tags";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+
+const checkInUtil = "checkIn";
+const checkOutUtil = "checkOut";
+const add = "add";
+const subtract = "subtract";
 
 export default function Detail({ route, navigation }) {
     const { id, urlTemplate } = route.params;
+
+    let [date, setDate] = useState(new Date());
+    let [checkIn, setCheckIn] = useState(new Date());
+    let [checkOut, setCheckOut] = useState(new Date());
+    let [guestNum, setGuestNum] = useState("1");
 
     const [hotelDetails, setHotelDetails] = useState({});
     const {
@@ -64,8 +85,102 @@ export default function Detail({ route, navigation }) {
         });
     }, []);
 
+    const onChangeIn = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setCheckIn(currentDate);
+    };
+
+    const onChangeOut = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setCheckOut(currentDate);
+    };
+
+    const showMode = (currentMode, action) => {
+        if (action == checkInUtil) {
+            DateTimePickerAndroid.open({
+                value: date,
+                onChange: onChangeIn,
+                mode: currentMode,
+                is24Hour: true,
+            });
+        } else {
+            DateTimePickerAndroid.open({
+                value: date,
+                onChange: onChangeOut,
+                mode: currentMode,
+                is24Hour: true,
+            });
+        }
+    };
+
+    const showDatepicker = (action) => {
+        showMode("date", action);
+    };
+
+    const updateGuestNum = (action) => {
+        if (action == add) {
+            guestNum = (Number(guestNum) + 1).toString();
+            setGuestNum(guestNum);
+
+            if (guestNum >= 4) {
+                scrollRef.current?.scrollTo({
+                    y: 0,
+                    animated: true,
+                });
+
+                setGuestNum("3");
+
+                dispatch(setError("Guest is only limited to three people"));
+                setTimeout(() => {
+                    dispatch(setError(""));
+                }, 1500);
+            }
+        } else {
+            if (guestNum >= 2) {
+                guestNum = (Number(guestNum) - 1).toString();
+                setGuestNum(guestNum);
+            }
+        }
+    };
+
     function phoneCall() {
         Linking.openURL("tel:+977 9802331837");
+    }
+
+    async function addReviews(review) {
+        const newReview = {
+            ...review,
+            publishedDate: `Written ${new Date().toLocaleDateString("en-US")}`,
+        };
+
+        const detail = await getHotelDetailsWithoutDest(id);
+
+        if (detail) {
+            const rev = detail.reviews.content;
+            rev.push(newReview);
+
+            const newDetails = {
+                ...detail,
+                reviews: {
+                    content: rev,
+                },
+            };
+
+            if (newDetails) {
+                scrollRef.current?.scrollTo({
+                    y: 0,
+                    animated: true,
+                });
+
+                await updateHotelDetails(id, newDetails);
+
+                dispatch(setSuccess("Reviews added successfully"));
+
+                setTimeout(() => {
+                    dispatch(setSuccess(""));
+                }, 1000);
+            }
+        }
     }
 
     async function sendMessageToHotel() {
@@ -82,21 +197,26 @@ export default function Detail({ route, navigation }) {
                     const message = `Booking Alert!
                     Hello ${title},
                     There is a request pending for booking.
-                    Please confirm booking request by calling customer.
+                    Please confirm/cancel booking request by calling customer.
+                    Username : ${user?.firstname} ${user?.lastname}
                     Phone number : ${user?.number}`;
 
                     const response = await sendMessage(message);
-                    dispatch(setSuccess("response"));
+                    if (response) {
+                        dispatch(setSuccess(response));
 
-                    setTimeout(() => {
-                        dispatch(
-                            setSuccess("Your will recieve a phone call shortly")
-                        );
-                    }, 2000);
+                        setTimeout(() => {
+                            dispatch(
+                                setSuccess(
+                                    "Your will recieve a phone call shortly"
+                                )
+                            );
+                        }, 2000);
 
-                    setTimeout(() => {
-                        dispatch(setSuccess(""));
-                    }, 4000);
+                        setTimeout(() => {
+                            dispatch(setSuccess(""));
+                        }, 4000);
+                    }
                 }
             } catch (error) {
                 dispatch(setError("Cannot book your request right now"));
@@ -142,6 +262,7 @@ export default function Detail({ route, navigation }) {
             <SafeAreaView className="flex-1">
                 {error && <AlertError message={error} />}
                 {success && <AlertSuccess message={success} />}
+
                 <View className="relative">
                     <View className="relative h-[260px]">
                         <ImageBackground
@@ -159,8 +280,8 @@ export default function Detail({ route, navigation }) {
                             onPress={() => navigation.pop()}
                         >
                             <Ionicons
-                                name="ios-arrow-undo-circle-outline"
-                                size={35}
+                                name="ios-arrow-back"
+                                size={30}
                                 color="white"
                             />
                         </TouchableWithoutFeedback>
@@ -197,19 +318,10 @@ export default function Detail({ route, navigation }) {
                 </View>
                 <View className="bg-[#F4F5FF] rounded-3xl bottom-10 h-full">
                     <View className="mt-8 mx-4">
-                        <View className="flex-row items-center flex-wrap mb-4">
-                            {tags &&
-                                tags.map((tag, index) => {
-                                    return (
-                                        <Text
-                                            key={index}
-                                            className="text-[12px] leading-5 text-gray-50 bg-amber-700 px-2 mr-1 rounded-lg font-[SansMedium] my-1"
-                                        >
-                                            {tag}
-                                        </Text>
-                                    );
-                                })}
-                        </View>
+                        {/** Tags Section */}
+                        <Tags tags={tags} />
+
+                        {/** About Section */}
                         <Text className="font-[BalooBold] text-xl text-gray-600">
                             About
                         </Text>
@@ -226,89 +338,87 @@ export default function Detail({ route, navigation }) {
                                 </Text>
                             </TouchableWithoutFeedback>
                         </Text>
-                        <View className="my-4">
-                            <ScrollView
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                            >
-                                {photos &&
-                                    photos.map((photo, index) => {
-                                        const moreUrl = replaceUrlWidthHeight(
-                                            photo?.urlTemplate,
-                                            300,
-                                            300
-                                        );
-                                        return (
-                                            <View
-                                                className="mx-2 rounded-3xl"
-                                                key={index}
-                                            >
-                                                <Image
-                                                    src={moreUrl}
-                                                    className="w-[250px] h-[120px] rounded-xl"
-                                                    resizeMode="cover"
-                                                />
-                                            </View>
-                                        );
-                                    })}
-                            </ScrollView>
-                        </View>
+
+                        {/** Photos Section */}
+                        <Photos photos={photos} />
 
                         {/** Amenities Section */}
-                        <View className="mt-3">
-                            <Text className="font-[BalooBold] text-xl text-gray-600">
-                                Amenities
-                            </Text>
-                            <View>
-                                {amenitiesScreen &&
-                                    amenitiesScreen
-                                        .splice(0, 5)
-                                        .map((item, index) => {
-                                            return (
-                                                <Text
-                                                    key={index}
-                                                    className="text-[12px] leading-5 text-gray-500 text-justify"
-                                                >
-                                                    {item}
-                                                </Text>
-                                            );
-                                        })}
-                            </View>
-                        </View>
+                        <Amenities amenitiesScreen={amenitiesScreen} />
 
-                        {/** Reviews Sectino */}
-                        <View className="mt-5">
+                        {/** Guests * Check In and Check Out */}
+                        <View className="my-6">
                             <Text className="font-[BalooBold] text-xl text-gray-600">
-                                Reviews
+                                Date of Travel & Guests
                             </Text>
-                            <View>
-                                {reviews &&
-                                    reviews?.content?.map((item, index) => {
-                                        return (
-                                            <View
-                                                key={index}
-                                                className="my-2 bg-white px-2 py-2 rounded-md shadow-blue-300"
-                                                style={{
-                                                    elevation: 100,
-                                                }}
-                                            >
-                                                <Text className="text-md font-[SansMedium] text-gray-600">
-                                                    {item.title}
-                                                </Text>
-                                                <Text className="text-[12px] leading-5 text-gray-500 text-justify my-2">
-                                                    {item.text
-                                                        .slice(0, 300)
-                                                        .split("<br />")
-                                                        .map((item) => item)}
-                                                </Text>
-                                                <View className="items-end">
-                                                    <Text className="text-[12px] leading-5 text-gray-500 w-[150px] text-right">
-                                                        {item.publishedDate}
-                                                    </Text>
-                                                </View>
+
+                            <View className="flex-row items-center justify-center bg-[#1e81b0] py-4 rounded-lg mt-1">
+                                {/** Check In Section */}
+                                <TouchableOpacity
+                                    onPress={() => showDatepicker(checkInUtil)}
+                                >
+                                    <View className="px-4">
+                                        <Text className="font-[SansMedium] tracking-tight text-white">
+                                            Check In
+                                        </Text>
+                                        <TextInput
+                                            className="font-[SansMedium] tracking-tight text-gray-200 mt-2"
+                                            editable={false}
+                                            value={checkIn.toLocaleDateString()}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+
+                                {/** Check Out Section */}
+                                <TouchableOpacity
+                                    onPress={() => showDatepicker(checkOutUtil)}
+                                >
+                                    <View className="border-l-2 px-6 border-r-2 border-white">
+                                        <Text className="font-[SansMedium] tracking-tight  text-white">
+                                            Check Out
+                                        </Text>
+                                        <TextInput
+                                            className="font-[SansMedium] tracking-tight text-gray-200 mt-2"
+                                            editable={false}
+                                            value={checkOut.toLocaleDateString()}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+
+                                {/** Guests section */}
+                                <View className="px-6">
+                                    <Text className="font-[SansMedium] tracking-tight text-center text-white">
+                                        Guests
+                                    </Text>
+                                    <View className="flex-row items-center mt-2">
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                updateGuestNum(subtract)
+                                            }
+                                        >
+                                            <View className="pr-2">
+                                                <Entypo
+                                                    name="circle-with-minus"
+                                                    size={24}
+                                                    color="white"
+                                                />
                                             </View>
-                                        );
-                                    })}
+                                        </TouchableOpacity>
+                                        <Text className="font-[SansMedium] text-lg text-white">
+                                            {guestNum}
+                                        </Text>
+                                        <TouchableOpacity
+                                            onPress={() => updateGuestNum(add)}
+                                        >
+                                            <View className="pl-2">
+                                                <Entypo
+                                                    name="circle-with-plus"
+                                                    size={24}
+                                                    color="white"
+                                                />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                             </View>
                         </View>
 
@@ -351,6 +461,9 @@ export default function Detail({ route, navigation }) {
                                 </View>
                             </View>
                         </TouchableOpacity>
+
+                        {/** Reviews Sectino */}
+                        <Reviews reviews={reviews} addReviews={addReviews} />
                     </View>
                 </View>
             </SafeAreaView>
