@@ -13,15 +13,17 @@ export const getHotels = async () => {
                 primaryInfo,
                 bubbleRating: { rating },
             } = data;
-            let {
-                cardPhotos: {
-                    0: {
-                        sizes: { urlTemplate },
-                    },
-                },
-            } = data;
 
-            return { id, title, priceForDisplay, primaryInfo, urlTemplate, rating };
+            let urlTemplate = data.cardPhotos[0];
+
+            return {
+                id,
+                title,
+                priceForDisplay,
+                primaryInfo,
+                urlTemplate,
+                rating,
+            };
         });
     } catch (error) {
         console.log(JSON.stringify(error));

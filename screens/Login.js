@@ -145,7 +145,7 @@ export default function Login({ navigation }) {
 
                         {/** Register Button */}
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("register")}
+                            onPress={() => navigation.navigate("question")}
                         >
                             <View className="border border-gray-300 rounded-3xl px-4 py-4">
                                 <Text className="font-[SansMedium] text-md tracking text-center">

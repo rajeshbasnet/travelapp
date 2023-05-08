@@ -18,10 +18,7 @@ export const authenticateUser = async (username, password) => {
 export const registerUser = async (userInfo) => {
     try {
         const url = "http://10.0.2.2:8080/user/register";
-        const response = await axios.post(url, {
-            ...userInfo,
-            role: "USER",
-        });
+        const response = await axios.post(url, userInfo);
         return response.data?.message;
     } catch (error) {
         throw new Error(error);

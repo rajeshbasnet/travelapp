@@ -14,8 +14,11 @@ import { AlertError, AlertSuccess } from "../components/shared/Alert";
 import { ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setError, setSuccess } from "../redux/globalSlice";
+import { USER } from "../constants/GlobalConstants";
 
-export default function Register({ navigation }) {
+export default function Register({ navigation, route }) {
+    const { role } = route.params;
+
     const scrollRef = useRef();
     const success = useSelector((state) => state.global.success);
     const error = useSelector((state) => state.global.error);
@@ -43,6 +46,7 @@ export default function Register({ navigation }) {
             username: "",
             password: "",
             number: "",
+            role,
         });
 
         try {
@@ -54,13 +58,17 @@ export default function Register({ navigation }) {
                 }, 1500);
 
                 setTimeout(() => {
-                    navigation.navigate("login");
+                    if (role == USER) {
+                        navigation.navigate("login");
+                    } else {
+                        navigation.navigate("intro_slider");
+                    }
                 }, 2000);
             }
         } catch (error) {
             dispatch(setError("Cannot register user with given email address"));
             setTimeout(() => {
-                setError("");
+                dispatch(setError(""));
             }, 2000);
         }
     }
@@ -222,7 +230,7 @@ export default function Register({ navigation }) {
                         </View>
 
                         {/** Register Button */}
-                        <TouchableOpacity onPress={() => navigation.pop()}>
+                        <TouchableOpacity onPress={() => navigation.popToTop()}>
                             <View className="border border-gray-300 rounded-3xl px-4 py-4">
                                 <Text className="text-md tracking text-center font-[SansMedium]">
                                     Login with GoTravel

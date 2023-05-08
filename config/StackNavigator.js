@@ -11,6 +11,9 @@ import PlacesList from "../screens/PlacesList";
 import Chatbot from "../screens/Chatbot";
 import Profile from "../screens/Profile";
 import Test from "../screens/Test";
+import Vendor from "../screens/Vendor";
+import Question from "../screens/Question";
+import Progress from "../screens/Progress";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +22,10 @@ export default function StackNavigator() {
         <Stack.Navigator
             screenOptions={{ headerShown: false, statusBarHidden: true }}
         >
+            <Stack.Screen name="progress" component={Progress} />
             <Stack.Screen name="login" component={Login} />
+            <Stack.Screen name="question" component={Question} />
+            <Stack.Screen name="intro_slider" component={Vendor} />
             <Stack.Screen name="test" component={Test} />
             <Stack.Screen name="register" component={Register} />
             <Stack.Screen name="discover" component={Discover} />
