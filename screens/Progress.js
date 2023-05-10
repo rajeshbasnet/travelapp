@@ -1,25 +1,27 @@
 import { View, Text, Image } from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setError, setSuccess } from "../redux/globalSlice";
 
 export default function Progress({ navigation }) {
     let success = useSelector((state) => state.global.success);
     let error = useSelector((state) => state.global.error);
 
+    const dispatch = useDispatch();
+
     useEffect(() => {
         if (success) {
             setTimeout(() => {
+                navigation.navigate("login");
                 dispatch(setSuccess(""));
-                navigation.navigate("discover");
             }, 1500);
         }
 
         if (error) {
             setTimeout(() => {
+                navigation.navigate("login");
                 dispatch(setError(""));
-                navigation.navigate("discover");
             }, 1500);
         }
     }, [success, error]);

@@ -8,3 +8,7 @@ export const removeUnneccessaryTitle = (title) => {
     let splittedTitle = title.split(".");
     return splittedTitle.length >= 2 ? splittedTitle[1].trim() : title;
 };
+
+export const extractStringToArray = (value) => {
+    return value.split(",");
+};

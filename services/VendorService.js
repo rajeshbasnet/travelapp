@@ -14,7 +14,7 @@ function makeIdFromNumber(length) {
     return result;
 }
 
-export async function indexHotelDetails(hotelDetail) {
+export async function indexHotelDetails(hotelDetail, vendorUsername) {
     let id = makeIdFromNumber(8);
 
     let url = "http://10.0.2.2:8080/hotels";
@@ -51,6 +51,7 @@ export async function indexHotelDetails(hotelDetail) {
                 const response = await axios.post(detailUrl, {
                     ...hotelDetail,
                     id,
+                    username: vendorUsername,
                 });
 
                 return response;

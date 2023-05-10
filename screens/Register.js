@@ -4,16 +4,17 @@ import {
     TouchableOpacity,
     SafeAreaView,
     TextInput,
+    ActivityIndicator,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Entypo, Feather } from "@expo/vector-icons";
-import { registerUser } from "../services/AuthService";
+import { registerUser, validatePhoneNumber } from "../services/AuthService";
 import { Keyboard } from "react-native";
 import { AlertError, AlertSuccess } from "../components/shared/Alert";
 import { ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setError, setSuccess } from "../redux/globalSlice";
+import { setError, setLoading, setSuccess } from "../redux/globalSlice";
 import { USER } from "../constants/GlobalConstants";
 
 export default function Register({ navigation, route }) {
@@ -22,6 +23,7 @@ export default function Register({ navigation, route }) {
     const scrollRef = useRef();
     const success = useSelector((state) => state.global.success);
     const error = useSelector((state) => state.global.error);
+    const loading = useSelector((state) => state.global.loading);
 
     const dispatch = useDispatch();
 
@@ -34,6 +36,7 @@ export default function Register({ navigation, route }) {
     });
 
     async function registerUserHandler() {
+        dispatch(setLoading(true));
         scrollRef.current?.scrollTo({
             y: 0,
             animated: true,
@@ -46,31 +49,94 @@ export default function Register({ navigation, route }) {
             username: "",
             password: "",
             number: "",
-            role,
         });
 
-        try {
-            const message = await registerUser(userInfo);
-            if (message) {
-                dispatch(setSuccess(message));
-                setTimeout(() => {
-                    dispatch(setSuccess(""));
-                }, 1500);
+        const isValidForm = await validateFormDetails();
 
-                setTimeout(() => {
-                    if (role == USER) {
-                        navigation.navigate("login");
-                    } else {
-                        navigation.navigate("intro_slider");
-                    }
-                }, 2000);
+        if (isValidForm) {
+            try {
+                const message = await registerUser({
+                    ...userInfo,
+                    role,
+                });
+                if (message) {
+                    dispatch(setLoading(false));
+                    dispatch(setSuccess(message));
+
+                    setTimeout(() => {
+                        if (role == USER) {
+                            navigation.navigate("login");
+                        } else {
+                            navigation.navigate("intro_slider", {
+                                username: userInfo.username,
+                            });
+                        }
+                    }, 2000);
+                }
+            } catch (error) {
+                dispatch(setLoading(false));
+                dispatch(
+                    setError("Cannot register user with given email address")
+                );
             }
-        } catch (error) {
-            dispatch(setError("Cannot register user with given email address"));
+        } else {
+            setLoading(false);
+        }
+    }
+
+    async function validateFormDetails() {
+        const { firstname, lastname, username, password, number } = userInfo;
+
+        if (firstname && lastname && username && password && number) {
+            const isValid = await validatePhoneNumber(number.trim());
+            console.log(isValid);
+
+            if (isValid) {
+                return validateEmail(username);
+            } else {
+                dispatch(setError("Invalid. Phone number is not valid"));
+                return false;
+            }
+        } else {
+            dispatch(setError("Invalid. Please enter all the fields"));
+            return false;
+        }
+    }
+
+    const validateEmail = (email) => {
+        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        if (reg.test(email) === false) {
+            dispatch(setError("Invalid. Email is not valid"));
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    useEffect(() => {
+        if (error) {
             setTimeout(() => {
                 dispatch(setError(""));
             }, 2000);
         }
+
+        if (success) {
+            setTimeout(() => {
+                dispatch(setSuccess(""));
+            }, 2000);
+        }
+    }, [error, success]);
+
+    useLayoutEffect(() => {
+        dispatch(setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <SafeAreaView className="flex-1 items-center justify-center">
+                <ActivityIndicator size={"large"} />
+            </SafeAreaView>
+        );
     }
 
     return (
@@ -176,7 +242,7 @@ export default function Register({ navigation, route }) {
                             <View className="relative">
                                 <TextInput
                                     keyboardType="numeric"
-                                    placeholder="eq. 10 numbers required"
+                                    placeholder="e.g. +977 9811111111"
                                     className="border border-gray-300 rounded-lg px-4 py-3"
                                     value={userInfo.number}
                                     onChangeText={(value) =>

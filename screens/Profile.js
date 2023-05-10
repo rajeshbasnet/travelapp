@@ -189,6 +189,11 @@ export default function Profile({ navigation }) {
         navigation.navigate("login");
     }
 
+    function isVendor() {
+        const { role } = jwt_decode(token);
+        return role === "VENDOR";
+    }
+
     useEffect(() => {
         fetchUser();
     }, []);
@@ -342,8 +347,28 @@ export default function Profile({ navigation }) {
                     </View>
                 </TouchableOpacity>
 
-                {/** User Information */}
-                <View></View>
+                <View className="bg-[#555cac] w-[150px] rounded-[50px] py-5 flex-row items-center justify-center mx-auto fixed top-[6%] mb-6">
+                    <TouchableOpacity
+                        className="mr-5"
+                        onPress={() => navigation.navigate("profile")}
+                    >
+                        <FontAwesome
+                            name="user-circle-o"
+                            size={24}
+                            color="#FBA401"
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        className="ml-5"
+                        onPress={() => navigation.navigate("dashboard")}
+                    >
+                        <AntDesign
+                            name="infocirlce"
+                            size={24}
+                            color={"#FBA401"}
+                        />
+                    </TouchableOpacity>
+                </View>
             </SafeAreaView>
         </ScrollView>
     );

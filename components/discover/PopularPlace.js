@@ -30,42 +30,59 @@ export default function PopularPlace({ navigation }) {
     const dispatch = useDispatch();
 
     const attractionDetailsHandler = async () => {
-        if (location?.timestamp) {
-            const attractionDetailList = [];
-            const attractions = await getAttractions(
-                location?.coords?.latitude,
-                location?.coords?.longitude
-            );
-            const ids = await fetchXID(attractions);
+        console.log("Attraction details fetching");
+        try {
+            if (location?.timestamp) {
+                const attractionDetailList = [];
+                const attractions = await getAttractions(
+                    location?.coords?.latitude,
+                    location?.coords?.longitude
+                );
+                const ids = await fetchXID(attractions);
 
-            for (let i = 0; i < ids.length; i++) {
-                const detail = await getAttractionDetail(ids[i]);
-                attractionDetailList.push(detail);
+                for (let i = 0; i < ids.length; i++) {
+                    const detail = await getAttractionDetail(ids[i]);
+                    attractionDetailList.push(detail);
+                }
+
+                dispatch(setAttractions(attractionDetailList));
+                dispatch(setLoading(false));
+            } else {
+                requestLocationPermissionHandler();
             }
-
-            dispatch(setAttractions(attractionDetailList));
-            dispatch(setLoading(false));
-        } else {
-            requestLocationPermissionHandler();
+        } catch (error) {
+            console.log("Error while fetching attraction details");
         }
     };
 
     const requestLocationPermissionHandler = async () => {
-        if (location.timestamp) {
-            return;
-        }
+        console.log("Requesting Location access");
+        try {
+            if (location.timestamp) return;
 
-        let { status } = await Location.requestForegroundPermissionsAsync();
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            console.log(status);
 
-        if (status !== "granted") {
-            //waiting
-            return;
-        } else {
-            let currentLocation = await Location.getCurrentPositionAsync({});
-            if (currentLocation) {
-                console.log(currentLocation);
-                dispatch(setLocation(currentLocation));
+            if (status !== "granted") {
+                //waiting
+                return;
+            } else {
+                console.log("Permission granted");
+                let currentLocation = await Location.getCurrentPositionAsync({
+                    accuracy: Location.Accuracy.Highest,
+                    maximumAge: 10000,
+                    timeout: 5000,
+                });
+
+                if (currentLocation) {
+                    console.log(currentLocation);
+                    dispatch(setLocation(currentLocation));
+                } else {
+                    requestLocationPermissionHandler();
+                }
             }
+        } catch (error) {
+            console.log(JSON.stringify(error));
         }
     };
 

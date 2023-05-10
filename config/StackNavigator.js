@@ -14,6 +14,7 @@ import Test from "../screens/Test";
 import Vendor from "../screens/Vendor";
 import Question from "../screens/Question";
 import Progress from "../screens/Progress";
+import Dashboard from "../screens/Dashboard";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,8 +23,9 @@ export default function StackNavigator() {
         <Stack.Navigator
             screenOptions={{ headerShown: false, statusBarHidden: true }}
         >
-            <Stack.Screen name="progress" component={Progress} />
             <Stack.Screen name="login" component={Login} />
+            <Stack.Screen name="dashboard" component={Dashboard} />
+            <Stack.Screen name="progress" component={Progress} />
             <Stack.Screen name="question" component={Question} />
             <Stack.Screen name="intro_slider" component={Vendor} />
             <Stack.Screen name="test" component={Test} />

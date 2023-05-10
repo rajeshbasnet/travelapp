@@ -67,6 +67,7 @@ export const updateUserWithoutPWChange = async (id, userInfo) => {
 export const getUserFromToken = async (token) => {
     try {
         const decodedValue = jwtDecode(token);
+        console.log(decodedValue);
         const { sub } = decodedValue;
 
         const url = "http://10.0.2.2:8080/user/info";
@@ -83,5 +84,27 @@ export const getUserFromToken = async (token) => {
     } catch (error) {
         console.log(JSON.stringify(error));
         throw error;
+    }
+};
+
+export const validatePhoneNumber = async (number) => {
+    const options = {
+        method: "GET",
+        url: "https://validate-phone-by-api-ninjas.p.rapidapi.com/v1/validatephone",
+        params: {
+            number,
+        },
+        headers: {
+            "X-RapidAPI-Key":
+                "665ed183a1mshd0ceb5e6668545bp1d8696jsne22232aae628",
+            "X-RapidAPI-Host": "validate-phone-by-api-ninjas.p.rapidapi.com",
+        },
+    };
+
+    try {
+        const response = await axios.request(options);
+        return response.data.is_valid;
+    } catch (error) {
+        JSON.stringify(error);
     }
 };

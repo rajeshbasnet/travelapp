@@ -1,4 +1,10 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,7 +13,7 @@ import { AlertError, AlertSuccess } from "../components/shared/Alert";
 import { Keyboard } from "react-native";
 import { setToken } from "../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setError, setSuccess } from "../redux/globalSlice";
+import { setError, setLoading, setSuccess } from "../redux/globalSlice";
 
 export default function Login({ navigation }) {
     const [username, setUsername] = useState("");
@@ -21,10 +27,12 @@ export default function Login({ navigation }) {
     const token = useSelector((state) => state.auth.token);
     const success = useSelector((state) => state.global.success);
     const error = useSelector((state) => state.global.error);
+    const loading = useSelector((state) => state.global.loading);
 
     const dispatch = useDispatch();
 
     async function authenticateUserHandler() {
+        dispatch(setLoading(true));
         Keyboard.dismiss();
         setUserInfo({
             username: "",
@@ -35,19 +43,22 @@ export default function Login({ navigation }) {
             const token = await authenticateUser(username, password);
 
             if (token) {
+                dispatch(setLoading(false));
+                dispatch(setToken(token));
                 dispatch(setSuccess("You have been logged in successfully"));
+
                 setTimeout(() => {
                     dispatch(setSuccess(""));
-                }, 2000);
+                }, 1800);
 
-                if (token) {
-                    dispatch(setToken(token));
-                    setTimeout(() => {
-                        navigation.navigate("discover");
-                    }, 2000);
-                }
+                setTimeout(() => {
+                    navigation.navigate("discover");
+                }, 2000);
+            } else {
+                dispatch(setLoading(false));
             }
         } catch (error) {
+            dispatch(setLoading(false));
             dispatch(setError("Cannot find user from given username."));
             setTimeout(() => {
                 dispatch(setError(""));
@@ -56,6 +67,7 @@ export default function Login({ navigation }) {
     }
 
     useLayoutEffect(() => {
+        dispatch(setLoading(false));
         if (token) {
             navigation.navigate("discover");
         }
@@ -68,6 +80,14 @@ export default function Login({ navigation }) {
             }, 1500);
         }
     }, [success]);
+
+    if (loading) {
+        return (
+            <SafeAreaView className="flex-1 items-center justify-center">
+                <ActivityIndicator size={"large"} />
+            </SafeAreaView>
+        );
+    }
 
     return (
         <>

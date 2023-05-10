@@ -91,3 +91,22 @@ export const sendMessage = async (message) => {
         console.log(JSON.stringify(error));
     }
 };
+
+export const getHotelDetailsFromUsername = async (username) => {
+    try {
+        const uri = `http://10.0.2.2:8080/hotels/username`;
+
+        const response = await axios.post(
+            uri,
+            {},
+            {
+                params: {
+                    username,
+                },
+            }
+        );
+        return response && response.data;
+    } catch (error) {
+        console.log(JSON.stringify(error));
+    }
+};

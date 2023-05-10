@@ -50,7 +50,7 @@ export default function Discover({ navigation }) {
                     >
                         <View className="flex flex-row items-center">
                             <Image
-                                src={uri}
+                                src={uri || defaultImage}
                                 resizeMode="contain"
                                 className="w-8 h-8 rounded-full"
                             />

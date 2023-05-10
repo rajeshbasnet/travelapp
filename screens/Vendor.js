@@ -5,6 +5,7 @@ import {
     Image,
     TouchableOpacity,
     ActivityIndicator,
+    ScrollView,
 } from "react-native";
 import React, { useEffect, useLayoutEffect } from "react";
 import AppIntroSlider from "react-native-app-intro-slider";
@@ -20,6 +21,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { setLoading } from "../redux/globalSlice";
 import { indexHotelDetails } from "../services/VendorService";
 import { AlertError, AlertSuccess } from "../components/shared/Alert";
+import { extractStringToArray } from "../utility/Util";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAZDGDzEUbd4sOG7L3QtgDJWT9TMlLUjoM",
@@ -35,11 +37,11 @@ if (!getApps().length) {
     initializeApp(firebaseConfig);
 }
 
-export default function Vendor({ navigation }) {
+export default function Vendor({ navigation, route }) {
+    const vendorUsername = route.params.username;
+
     const location = useSelector((state) => state.global.location);
     const loading = useSelector((state) => state.global.loading);
-    const success = useSelector((state) => state.global.success);
-    const error = useSelector((state) => state.global.error);
 
     const dispatch = useDispatch();
 
@@ -122,146 +124,150 @@ export default function Vendor({ navigation }) {
         if (item.key == 1) {
             return (
                 <SafeAreaView className="flex-1 w-full bg-white">
-                    <View className="flex-1 w-[90%] mx-auto mt-10">
-                        <Image
-                            source={require("../assets/lottie/info.gif")}
-                            resizeMode="contain"
-                            className="h-[150px] w-full mx-auto"
-                        />
-
-                        <View className="my-3">
-                            <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
-                                Enter a hotel name
-                            </Text>
-                            <TextInput
-                                placeholder="e.g. Hyaat Regency Hotel"
-                                className="border border-gray-300 rounded-xl px-4 py-3"
-                                value={vendorDetail.title}
-                                onChangeText={(value) =>
-                                    setVendorDetail({
-                                        ...vendorDetail,
-                                        title: value,
-                                    })
-                                }
+                    <ScrollView>
+                        <View className="flex-1 w-[90%] mx-auto mt-10">
+                            <Image
+                                source={require("../assets/lottie/info.gif")}
+                                resizeMode="contain"
+                                className="h-[150px] w-full mx-auto"
                             />
-                        </View>
 
-                        <View className="my-3">
-                            <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
-                                Enter your address
-                            </Text>
-                            <View className="relative">
+                            <View className="my-3">
+                                <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
+                                    Enter a hotel name
+                                </Text>
                                 <TextInput
-                                    placeholder="e.g. Sakhamaul, New Baneshwor"
+                                    placeholder="e.g. Hyaat Regency Hotel"
                                     className="border border-gray-300 rounded-xl px-4 py-3"
-                                    value={vendorDetail.address}
+                                    value={vendorDetail.title}
                                     onChangeText={(value) =>
                                         setVendorDetail({
                                             ...vendorDetail,
-                                            address: value,
+                                            title: value,
                                         })
                                     }
                                 />
                             </View>
-                        </View>
 
-                        <View className="my-3">
-                            <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
-                                Provide some descriptions about your hotel !
-                            </Text>
-                            <View className="relative">
-                                <TextInput
-                                    multiline
-                                    numberOfLines={5}
-                                    placeholder="e.g. About hotel..."
-                                    style={{ textAlignVertical: "top" }}
-                                    className="border border-gray-300 rounded-xl px-4 py-3"
-                                    value={vendorDetail.about}
-                                    onChangeText={(value) =>
-                                        setVendorDetail({
-                                            ...vendorDetail,
-                                            about: value,
-                                        })
-                                    }
-                                />
+                            <View className="my-3">
+                                <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
+                                    Enter your address
+                                </Text>
+                                <View className="relative">
+                                    <TextInput
+                                        placeholder="e.g. Sakhamaul, New Baneshwor"
+                                        className="border border-gray-300 rounded-xl px-4 py-3"
+                                        value={vendorDetail.address}
+                                        onChangeText={(value) =>
+                                            setVendorDetail({
+                                                ...vendorDetail,
+                                                address: value,
+                                            })
+                                        }
+                                    />
+                                </View>
+                            </View>
+
+                            <View className="my-3">
+                                <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
+                                    Provide some descriptions about your hotel !
+                                </Text>
+                                <View className="relative">
+                                    <TextInput
+                                        multiline
+                                        numberOfLines={5}
+                                        placeholder="e.g. About hotel..."
+                                        style={{ textAlignVertical: "top" }}
+                                        className="border border-gray-300 rounded-xl px-4 py-3"
+                                        value={vendorDetail.about}
+                                        onChangeText={(value) =>
+                                            setVendorDetail({
+                                                ...vendorDetail,
+                                                about: value,
+                                            })
+                                        }
+                                    />
+                                </View>
                             </View>
                         </View>
-                    </View>
+                    </ScrollView>
                 </SafeAreaView>
             );
         } else if (item.key === 2) {
             return (
                 <SafeAreaView className="flex-1 bg-white w-full">
-                    <View className="flex-1 w-[90%] mx-auto mt-10">
-                        <Image
-                            source={require("../assets/lottie/info.gif")}
-                            resizeMode="contain"
-                            className="h-[150px] w-full mx-auto"
-                        />
+                    <ScrollView>
+                        <View className="flex-1 w-[90%] mx-auto mt-10">
+                            <Image
+                                source={require("../assets/lottie/info.gif")}
+                                resizeMode="contain"
+                                className="h-[150px] w-full mx-auto"
+                            />
 
-                        <View className="my-3">
-                            <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
-                                How much do you charge per stay ?
-                            </Text>
-                            <View className="relative">
-                                <TextInput
-                                    placeholder="e.g. Sakhamaul, New Baneshwor"
-                                    className="border border-gray-300 rounded-xl px-4 py-3"
-                                    value={vendorDetail.price}
-                                    onChangeText={(value) =>
-                                        setVendorDetail({
-                                            ...vendorDetail,
-                                            price: value,
-                                        })
-                                    }
-                                />
+                            <View className="my-3">
+                                <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
+                                    How much do you charge per stay ?
+                                </Text>
+                                <View className="relative">
+                                    <TextInput
+                                        placeholder="e.g. Sakhamaul, New Baneshwor"
+                                        className="border border-gray-300 rounded-xl px-4 py-3"
+                                        value={vendorDetail.price}
+                                        onChangeText={(value) =>
+                                            setVendorDetail({
+                                                ...vendorDetail,
+                                                price: value,
+                                            })
+                                        }
+                                    />
+                                </View>
+                            </View>
+
+                            <View className="my-3">
+                                <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
+                                    What facilities do you provide ?
+                                </Text>
+                                <View className="relative">
+                                    <TextInput
+                                        multiline
+                                        numberOfLines={4}
+                                        style={{ textAlignVertical: "top" }}
+                                        placeholder="e.g. Free Parking, Free Wifi"
+                                        className="border border-gray-300 rounded-xl px-4 py-3"
+                                        value={vendorDetail.amenitiesScreen}
+                                        onChangeText={(value) =>
+                                            setVendorDetail({
+                                                ...vendorDetail,
+                                                amenitiesScreen: value,
+                                            })
+                                        }
+                                    />
+                                </View>
+                            </View>
+
+                            <View className="my-3">
+                                <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
+                                    Add tags for better search !
+                                </Text>
+                                <View className="relative">
+                                    <TextInput
+                                        multiline
+                                        numberOfLines={4}
+                                        style={{ textAlignVertical: "top" }}
+                                        placeholder="e.g. Charming, Romantic, Classic, Great View"
+                                        className="border border-gray-300 rounded-xl px-4 py-3"
+                                        value={vendorDetail.tags}
+                                        onChangeText={(value) =>
+                                            setVendorDetail({
+                                                ...vendorDetail,
+                                                tags: value,
+                                            })
+                                        }
+                                    />
+                                </View>
                             </View>
                         </View>
-
-                        <View className="my-3">
-                            <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
-                                What facilities do you provide ?
-                            </Text>
-                            <View className="relative">
-                                <TextInput
-                                    multiline
-                                    numberOfLines={4}
-                                    style={{ textAlignVertical: "top" }}
-                                    placeholder="e.g. Free Parking, Free Wifi"
-                                    className="border border-gray-300 rounded-xl px-4 py-3"
-                                    value={vendorDetail.amenitiesScreen}
-                                    onChangeText={(value) =>
-                                        setVendorDetail({
-                                            ...vendorDetail,
-                                            amenitiesScreen: value,
-                                        })
-                                    }
-                                />
-                            </View>
-                        </View>
-
-                        <View className="my-3">
-                            <Text className="font-[SansMedium] text-[15px] tracking-tighter leading-10">
-                                Add tags for better search !
-                            </Text>
-                            <View className="relative">
-                                <TextInput
-                                    multiline
-                                    numberOfLines={4}
-                                    style={{ textAlignVertical: "top" }}
-                                    placeholder="e.g. Charming, Romantic, Classic, Great View"
-                                    className="border border-gray-300 rounded-xl px-4 py-3"
-                                    value={vendorDetail.tags}
-                                    onChangeText={(value) =>
-                                        setVendorDetail({
-                                            ...vendorDetail,
-                                            tags: value,
-                                        })
-                                    }
-                                />
-                            </View>
-                        </View>
-                    </View>
+                    </ScrollView>
                 </SafeAreaView>
             );
         } else if (item.key === 3) {
@@ -508,7 +514,25 @@ export default function Vendor({ navigation }) {
 
     async function addHotel() {
         try {
-            const response = await indexHotelDetails(vendorDetail);
+            const newAmenitiesScreen = extractStringToArray(
+                vendorDetail.amenitiesScreen
+            );
+            console.log(newAmenitiesScreen);
+            const newTags = extractStringToArray(vendorDetail.tags);
+            console.log(newTags);
+
+            const newDetail = { ...vendorDetail };
+            newDetail.amenitiesScreen = newAmenitiesScreen;
+            newDetail.tags = newTags;
+
+            const response = await indexHotelDetails(
+                {
+                    ...newDetail,
+                    amenitiesScreen: newAmenitiesScreen,
+                    tags: newTags,
+                },
+                vendorUsername
+            );
             if (response) {
                 dispatch(setSuccess("Hotel added successfully"));
                 navigation.navigate("progress");
