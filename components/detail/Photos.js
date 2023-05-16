@@ -8,11 +8,7 @@ export default function Photos({ photos }) {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {photos &&
                     photos.map((photo, index) => {
-                        const moreUrl = replaceUrlWidthHeight(
-                            photo?.urlTemplate,
-                            300,
-                            300
-                        );
+                        const moreUrl = replaceUrlWidthHeight(photo, 300, 300);
                         return (
                             <View className="mx-2 rounded-3xl" key={index}>
                                 <Image

@@ -76,7 +76,13 @@ export default function Detail({ route, navigation }) {
 
     useEffect(() => {
         getHotelDetails(id).then((detail) => {
-            setHotelDetails(detail);
+            setHotelDetails({
+                ...detail,
+                amenitiesScreen:
+                    amenitiesScreen.length > 5
+                        ? amenitiesScreen.splice(0, 5)
+                        : amenitiesScreen,
+            });
             dispatch(setLoading(false));
         });
     }, []);

@@ -4,8 +4,12 @@ export const getHotelDetails = async (id) => {
     try {
         const uri = `http://10.0.2.2:8080/hotels/${id}`;
 
+        console.log(uri);
+
         const response = await axios.get(uri);
         const data = await response.data;
+
+        console.log(response.data);
 
         const {
             rating,

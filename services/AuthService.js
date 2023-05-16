@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import { USER, VENDOR } from "../constants/GlobalConstants";
 
 export const authenticateUser = async (username, password) => {
     try {
@@ -107,4 +108,17 @@ export const validatePhoneNumber = async (number) => {
     } catch (error) {
         JSON.stringify(error);
     }
+};
+
+export const isUser = (token) => {
+    const decodedValue = jwtDecode(token);
+    const { role } = decodedValue;
+    return role === USER;
+};
+
+export const isVendor = (token) => {
+    const decodedValue = jwtDecode(token);
+    const { role } = decodedValue;
+    console.log(role);
+    return role === VENDOR;
 };
