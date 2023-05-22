@@ -1,0 +1,59 @@
+User Guidelines
+
+Welcome to Sahayatri! These guidelines will help you make the most of our travel application. Please read them carefully before getting started.
+
+Account Creation:
+
+To use Sahayatri, you need to create an account. Follow the on-screen prompts to sign up, providing accurate and valid information.
+Choose a strong password and keep it confidential. Avoid using common words or personal information.
+User Interface:
+
+Familiarize yourself with the application's user interface (UI). Take note of the various screens and components available.
+Explore the different features and functionalities provided. Use tooltips or help guides if available.
+
+
+Account Types:
+
+Sahayatri supports two types of users: Customers and Vendors.
+Customers can search for hotels and attractions, view hotel details, book hotels, call hotels, and add reviews.
+Vendors can register hotels, which will be visible to customers. Customers can then send booking requests to the registered hotels.
+
+
+Search Functionality:
+
+Use the search feature to find hotels and attractions near your location. Enter the relevant keywords, such as city name or attraction name, to get accurate results.
+Explore the search filters provided to narrow down your search results based on preferences such as price range, rating, and amenities.
+Hotel Details:
+
+When viewing hotel details, you will find information about the hotel's amenities, location, ratings, and reviews.
+Take note of any special offers or discounts mentioned for the hotel.
+Booking Process:
+
+As a customer, you can book a hotel by selecting the desired dates and room type, and proceeding with the booking process as prompted.
+Provide accurate information and review the booking details before confirming your reservation.
+In case of any queries or special requests, use the provided contact information to get in touch with the hotel.
+Adding Reviews:
+
+Customers can add reviews to hotels they have stayed at. Provide honest and constructive feedback to help other users make informed decisions.
+Respect the guidelines and policies for posting reviews. Avoid offensive or inappropriate content.
+
+
+Vendor Registration:
+
+If you are a hotel owner or representative, you can register your hotel on Sahayatri.
+Follow the vendor registration process and provide accurate information about your hotel.
+Once registered, your hotel will be visible to customers, and they can send booking requests.
+
+
+Data Availability:
+
+Please note that the application currently fetches hotel data from an API and is limited in terms of available hotels.
+We are constantly working to expand our database to include more hotels and improve the user experience.
+
+Security and Privacy:
+
+Keep your login credentials confidential and avoid sharing them with others.
+Use secure and trusted networks when using the application, especially when submitting personal information or making bookings.
+
+Enjoy your travel experience with Sahayatri! If you have any further questions or need assistance, feel free to contact our support team through the provided channels.
+

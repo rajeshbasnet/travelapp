@@ -1,0 +1,48 @@
+Installation Guidelines
+
+Before you can run Sahayatri, please follow the steps below to set up the necessary tools and dependencies.
+
+Install Required Software:
+
+Visual Studio Code: Download and install Visual Studio Code, a popular code editor, from the official website (https://code.visualstudio.com).
+IntelliJ IDEA: Download and install IntelliJ IDEA, an integrated development environment (IDE) for Spring Boot, from the official website (https://www.jetbrains.com/idea).
+JDK (Java Development Kit): Download and install JDK from the Oracle website (https://www.oracle.com/java/technologies/downloads/). [Specify the required JDK version if different from the provided URL.]
+Emulator Setup:
+
+Android Studio: Install Android Studio, which provides the Android emulator, from the official website (https://developer.android.com/studio).
+Set up an Android Virtual Device (AVD) within Android Studio. [Specify the AVD details you mentioned, such as Pexels 32 API 22.]
+Elasticsearch Installation:
+
+Download Elasticsearch from the official website (https://www.elastic.co/downloads/enterprise-search). [Specify the Elasticsearch version if different from the provided URL.]
+
+Locate the elasticsearch.bat file inside the \elasticsearch-[version]\bin folder.
+Run the elasticsearch.bat file to start Elasticsearch on your machine.
+
+
+Firebase Storage Configuration:
+
+Create an account on Firebase (https://firebase.google.com) if you don't have one already.
+Go to the Firebase console and create a new app specifically for storage.
+Obtain the Firebase config, which includes the necessary credentials, and place it in your code to enable Firebase storage functionality.
+
+
+OpenAI API Integration:
+
+Create an account on OpenAI (https://openai.com) if you haven't already.
+Obtain your API key from the OpenAI website.
+
+In the Chatbot.js file of your React Native application, locate the apiKey variable and replace the existing value with your OpenAI API key.
+Project Setup:
+
+Open the downloaded folder of your React Native application in Visual Studio Code by right-clicking on the folder and selecting "Open with Visual Studio Code."
+Similarly, open your Spring Boot application in IntelliJ IDEA by selecting "Open" and navigating to the project folder.
+Install Dependencies:
+
+In your React Native application, run yarn or npm install in the terminal to install the required dependencies. The dependencies will be automatically fetched based on the project's configuration files.
+Make sure your Spring Boot application's dependencies are resolved by IntelliJ IDEA.
+Running the Application:
+
+To run the React Native application, use the command yarn android or npm run android in the terminal. This will build the app and launch it on the Android emulator.
+To run the Spring Boot application, click the green play button in the top-right corner of IntelliJ IDEA. This will start the backend server.
+Once both the backend and frontend are running, you can enjoy using Sahayatri by interacting with the application in the Android emulator.
+
