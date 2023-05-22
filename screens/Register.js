@@ -67,7 +67,7 @@ export default function Register({ navigation, route }) {
                         if (role == USER) {
                             navigation.navigate("login");
                         } else {
-                            navigation.navigate("intro_slider", {
+                            navigation.navigate("information", {
                                 username: userInfo.username,
                             });
                         }
@@ -296,7 +296,9 @@ export default function Register({ navigation, route }) {
                         </View>
 
                         {/** Register Button */}
-                        <TouchableOpacity onPress={() => navigation.popToTop()}>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("login")}
+                        >
                             <View className="border border-gray-300 rounded-3xl px-4 py-4">
                                 <Text className="text-md tracking text-center font-[SansMedium]">
                                     Login with GoTravel

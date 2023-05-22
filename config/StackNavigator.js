@@ -15,6 +15,10 @@ import Vendor from "../screens/Vendor";
 import Question from "../screens/Question";
 import Progress from "../screens/Progress";
 import Dashboard from "../screens/Dashboard";
+import Information from "../screens/vendor/Information";
+import HotelDetail from "../screens/vendor/HotelDetail";
+import ImageCollection from "../screens/vendor/ImageCollection";
+import AllSet from "../screens/vendor/AllSet";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,16 +27,15 @@ export default function StackNavigator() {
         <Stack.Navigator
             screenOptions={{ headerShown: false, statusBarHidden: true }}
         >
+            <Stack.Screen name="splash" component={Splash} />
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="dashboard" component={Dashboard} />
             <Stack.Screen name="progress" component={Progress} />
             <Stack.Screen name="question" component={Question} />
-            <Stack.Screen name="intro_slider" component={Vendor} />
             <Stack.Screen name="test" component={Test} />
             <Stack.Screen name="register" component={Register} />
             <Stack.Screen name="discover" component={Discover} />
             <Stack.Screen name="profile" component={Profile} />
-            <Stack.Screen name="splash" component={Splash} />
             <Stack.Screen name="chatbot" component={Chatbot} />
             <Stack.Screen name="places" component={Places} />
             <Stack.Screen name="detail" component={Detail} />
@@ -42,6 +45,10 @@ export default function StackNavigator() {
             />
             <Stack.Screen name="attraction" component={Attractions} />
             <Stack.Screen name="places_list" component={PlacesList} />
+            <Stack.Screen name="information" component={Information} />
+            <Stack.Screen name="hotel_detail" component={HotelDetail} />
+            <Stack.Screen name="image_collection" component={ImageCollection} />
+            <Stack.Screen name="all_set" component={AllSet} />
         </Stack.Navigator>
     );
 }

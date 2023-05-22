@@ -24,9 +24,9 @@ export async function indexHotelDetails(hotelDetail, vendorUsername) {
     const { title, photos, price, rating } = hotelDetail;
 
     const hotel = {
-        id,
+        hotelId: id,
         title,
-        primaryInfo: "Free Breakfast Included",
+        primaryInfo: "Kathmandu",
         secondaryInfo: "",
         badge: {},
         bubbleRating: {
@@ -37,10 +37,10 @@ export async function indexHotelDetails(hotelDetail, vendorUsername) {
         accentedLabel: false,
         provider: "none",
         priceForDisplay: price,
-        strikeThroughPrice: null,
         priceDetails: null,
         priceSummary: null,
         cardPhotos: photos,
+        registered: "custom",
     };
 
     if (id) {

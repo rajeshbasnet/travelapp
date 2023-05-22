@@ -7,6 +7,8 @@ export const getHotels = async () => {
 
         const response = await axios.get(uri);
 
+        console.log(response.data.length);
+
         return [...response.data].map((data) => {
             let title = removeUnneccessaryTitle(data.title);
             let {
@@ -14,9 +16,13 @@ export const getHotels = async () => {
                 priceForDisplay,
                 primaryInfo,
                 bubbleRating: { rating },
+                registered,
             } = data;
 
-            let urlTemplate = data.cardPhotos[0];
+            let urlTemplate =
+                data?.cardPhotos?.length > 0
+                    ? data.cardPhotos[0]
+                    : "https://firebasestorage.googleapis.com/v0/b/travelapp-53573.appspot.com/o/hotel.png?alt=media&token=ed222b7a-e2ee-42b6-9acb-003b62e6d65d";
 
             return {
                 id: hotelId,
@@ -25,6 +31,7 @@ export const getHotels = async () => {
                 primaryInfo,
                 urlTemplate,
                 rating,
+                registered,
             };
         });
     } catch (error) {
@@ -49,21 +56,26 @@ export const getHotelsByAddress = async (place_name) => {
         return [...response.data].map((data) => {
             let title = removeUnneccessaryTitle(data.title);
             let {
-                id,
+                hotelId,
                 priceForDisplay,
                 primaryInfo,
                 bubbleRating: { rating },
+                registered,
             } = data;
 
-            let urlTemplate = data.cardPhotos[0];
+            let urlTemplate =
+                data?.cardPhotos?.length > 0
+                    ? data.cardPhotos[0]
+                    : "https://firebasestorage.googleapis.com/v0/b/travelapp-53573.appspot.com/o/hotel.png?alt=media&token=ed222b7a-e2ee-42b6-9acb-003b62e6d65d";
 
             return {
-                id,
+                id: hotelId,
                 title,
                 priceForDisplay,
                 primaryInfo,
                 urlTemplate,
                 rating,
+                registered,
             };
         });
     } catch (error) {

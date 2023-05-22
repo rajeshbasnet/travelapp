@@ -10,7 +10,7 @@ export default function Splash({ navigation }) {
             <View className="h-[50%] items-center">
                 <Image
                     source={LogoImage}
-                    className="w-80 h-full"
+                    className="w-full h-full"
                     resizeMode="contain"
                 />
             </View>
@@ -18,7 +18,7 @@ export default function Splash({ navigation }) {
             <View className="flex-1 justify-between items-center mx-8 my-16">
                 <View>
                     <Text className="font-[BalooBold] text-5xl text-center leading-[60px]">
-                        Go Travel
+                        Sahayatri
                     </Text>
                     <Text className="text-[16px] font-[SansMedium] text-center tracking-tighter">
                         A platform built for a new way of travelling

@@ -75,16 +75,23 @@ export default function Detail({ route, navigation }) {
     }, []);
 
     useEffect(() => {
-        getHotelDetails(id).then((detail) => {
-            setHotelDetails({
-                ...detail,
-                amenitiesScreen:
-                    amenitiesScreen.length > 5
-                        ? amenitiesScreen.splice(0, 5)
-                        : amenitiesScreen,
+        getHotelDetails(id)
+            .then((detail) => {
+                if (detail) {
+                    setHotelDetails({
+                        ...detail,
+                        amenitiesScreen:
+                            detail.amenitiesScreen.length > 5
+                                ? detail.amenitiesScreen.splice(0, 5)
+                                : detail.amenitiesScreen,
+                    });
+                    dispatch(setLoading(false));
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+                console.log(error);
             });
-            dispatch(setLoading(false));
-        });
     }, []);
 
     const onChangeIn = (event, selectedDate) => {
@@ -201,7 +208,11 @@ export default function Detail({ route, navigation }) {
                     There is a request pending for booking.
                     Please confirm/cancel booking request by calling customer.
                     Username : ${user?.firstname} ${user?.lastname}
-                    Phone number : ${user?.number}`;
+                    Phone number : ${user?.number}
+                    Additional Details
+                    Check In : ${checkIn}
+                    Check Out : ${checkOut}
+                    Total Guests : ${guestNum}`;
 
                     const response = await sendMessage(message);
                     if (response) {
@@ -294,7 +305,7 @@ export default function Detail({ route, navigation }) {
                         </Text>
                         <View className="items-center flex-row justify-between w-[90%]">
                             <Text className="text-white font-[BalooBold] text-md">
-                                {address && address.slice(0, -23)}
+                                {address}
                             </Text>
                             <View className="flex-row items-baseline">
                                 <AntDesign

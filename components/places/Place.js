@@ -11,7 +11,15 @@ import React from "react";
 import { replaceUrlWidthHeight } from "../../utility/Util";
 
 export default function Place({ item, navigation }) {
-    let { id, title, priceForDisplay, primaryInfo, urlTemplate, rating } = item;
+    let {
+        id,
+        title,
+        priceForDisplay,
+        primaryInfo,
+        urlTemplate,
+        rating,
+        registered,
+    } = item;
 
     let url = replaceUrlWidthHeight(urlTemplate, 100, 100);
 
@@ -56,7 +64,18 @@ export default function Place({ item, navigation }) {
                     </View>
                 </View>
 
+                {registered === "custom" ? (
+                    <View className="absolute right-0 bottom-0 bg-green-600 px-1 py-1 rounded ">
+                        <Text className="text-white px-2 font-[SansMedium] tracking-tighter">
+                            Registered
+                        </Text>
+                    </View>
+                ) : (
+                    <></>
+                )}
+
                 {/** Detail navigate icon */}
+
                 <View className="absolute right-3 bg-slate-100 px-1 py-1 rounded-full">
                     <MaterialCommunityIcons
                         name="share"
